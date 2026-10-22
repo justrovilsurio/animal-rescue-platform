@@ -5,8 +5,10 @@ export function blankContent<C extends Collection>(collection: C): ContentByColl
   const blanks: { [K in Collection]: ContentByCollection[K] } = {
     rescues: { name: '', species: 'Dog', breed: '', location: '', photos: [], rescuedOn: '', story: '' },
     adopt: { name: '', species: 'Dog', breed: '', location: '', photos: [], age: { mode: 'approx', text: '' }, sex: null, personality: '', health: '' },
-    stories: { title: '', body: '', adoptedOn: '', photos: [] },
+    prepare: { title: '', body: '', icon: 'heart' },
+    stories: { title: '', body: '', adoptedOn: '', photos: [], adopter: '', animal: '' },
     events: { title: '', body: '', date: '', time: '', where: '' },
+    team: { name: '', role: '', bio: '', photo: null },
     volunteer: { title: '', body: '', commitment: '' },
     donation: { title: '', body: '', goal: 0, raised: 0, account: '', qr: null },
     guides: { title: '', body: '', readTime: '' },

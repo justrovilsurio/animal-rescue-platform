@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import type { AdoptionContent, AdoptionFilters, GroupPage, RescueContent, StoryContent, EventContent, VolunteerContent, DonationContent, GuideContent, CommunityCollection } from '../domain/types';
+import type { AdoptionContent, AdoptionFilters, GroupPage, RescueContent, StoryContent, EventContent, VolunteerContent, DonationContent, GuideContent, CommunityCollection, PrepareContent, TeamContent } from '../domain/types';
 import { AGE_FILTER_OPTIONS, EMPTY_FILTERS, factsLine } from '../domain/animals';
 import { Icon } from '../ui/Icon';
 import { ButtonA, Button, ButtonLink } from '../ui/Button';
@@ -229,15 +229,54 @@ const peso = (n: number) => `₱${Math.round(n).toLocaleString('en-PH')}`;
 export function CommunityCard({ kind, item, page, status }: { kind: CommunityCollection; item: unknown; page: GroupPage; status?: EntryStatus }) {
   const { preview } = usePublic();
   const badge = preview && status && status !== 'live' ? <div><StatusBadge status={status} /></div> : null;
+  if (kind === 'prepare') {
+    const pr = item as PrepareContent;
+    return (
+      <article className="kd-prep">
+        <span className="kd-prep__icon" aria-hidden="true"><Icon name={pr.icon} size={28} strokeWidth={1.6} /></span>
+        {badge}
+        <h3 className="kd-prep__title">{pr.title || 'Untitled point'}</h3>
+        {pr.body ? <p className="kd-prep__body">{pr.body}</p> : null}
+      </article>
+    );
+  }
+  if (kind === 'team') {
+    const t = item as TeamContent;
+    const initials = t.name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('') || '?';
+    return (
+      <article className="kd-member">
+        <div className="kd-member__photo">
+          {t.photo ? <img src={t.photo.src} alt={t.name ? `${t.name}, ${t.role || 'team member'}` : ''} loading="lazy" />
+            : <span className="kd-member__initials" aria-hidden="true">{initials}<PawMark size={34} className="kd-member__paw" /></span>}
+          {badge ? <div className="kd-card__badge">{badge}</div> : null}
+        </div>
+        <h3 className="kd-member__name">{t.name || 'Unnamed'}</h3>
+        {t.role ? <p className="kd-member__role">{t.role}</p> : null}
+        {t.bio ? <p className="kd-member__bio">{t.bio}</p> : null}
+      </article>
+    );
+  }
   if (kind === 'stories') {
     const s = item as StoryContent;
+    const shown = s.photos.slice(0, 3);
+    const more = s.photos.length - shown.length;
+    const byline = [s.animal, s.adopter && `from ${s.adopter}`, s.adoptedOn].filter(Boolean).join(' · ');
     return (
-      <article className="kd-cc">
-        {s.photos[0] ? <div className="kd-cc__img"><img src={s.photos[0].src} alt="" loading="lazy" /></div> : null}
+      <article className="kd-update">
+        {shown.length ? (
+          <div className="kd-mosaic" data-count={shown.length}>
+            {shown.map((ph, i) => (
+              <div className="kd-mosaic__cell" key={ph.id + i}>
+                <img src={ph.src} alt={i === 0 && s.animal ? `${s.animal} at home` : ''} loading="lazy" />
+                {i === shown.length - 1 && more > 0 ? <span className="kd-mosaic__more">+{more}<span className="kd-sr"> more photos</span></span> : null}
+              </div>
+            ))}
+          </div>
+        ) : null}
         {badge}
-        <h3 className="kd-cc__title">{s.title || 'Untitled story'}</h3>
-        {s.body ? <p className="kd-cc__body">{s.body}</p> : null}
-        {s.adoptedOn ? <div className="kd-cc__meta"><span><Icon name="heart" size={16} />Adopted {s.adoptedOn}</span></div> : null}
+        <h3 className="kd-update__title">{s.title || 'Untitled update'}</h3>
+        {byline ? <p className="kd-update__by"><Icon name="heart" size={16} />{byline}</p> : null}
+        {s.body ? <p className="kd-update__body">{s.body}</p> : null}
       </article>
     );
   }

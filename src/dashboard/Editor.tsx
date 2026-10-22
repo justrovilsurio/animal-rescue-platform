@@ -4,8 +4,10 @@ import { useStore } from '../state/store';
 import { entryStatus, validateForPublish, workingCopy, type FieldErrors } from '../domain/publishing';
 import { sectionLabel } from '../domain/sections';
 import type {
-  AdoptionContent, Collection, ContentByCollection, DonationContent, Entry, EventContent, GuideContent, RescueContent, StoryContent, VolunteerContent, Sex,
+  AdoptionContent, Collection, ContentByCollection, DonationContent, Entry, EventContent, GuideContent, PrepareContent, PrepareIcon, RescueContent, StoryContent,
+  TeamContent, VolunteerContent, Sex,
 } from '../domain/types';
+import { Icon } from '../ui/Icon';
 import { nowIso } from '../lib/ids';
 import { useToast } from '../ui/Toast';
 import { Button } from '../ui/Button';
@@ -182,7 +184,31 @@ function AnimalFields({ collection, c, edit, errors }: { collection: 'rescues' |
   );
 }
 
+function TeamFields({ c, edit, errors }: { c: TeamContent; edit: Edit; errors: FieldErrors }) {
+  return (
+    <section className="kd-panel">
+      <div className="kd-form">
+        <ChoiceGroup legend="Photo" optional hint="A portrait works best. Without one, we show their initials.">
+          <PhotoInput single photos={c.photo ? [c.photo] : []} onChange={(p) => edit({ photo: p[0] ?? null } as never)} label="Upload photo" />
+        </ChoiceGroup>
+        <div className="kd-form__grid">
+          <TextField label="Name" value={c.name} onChange={(e) => edit({ name: e.target.value } as never)} error={errors.name} autoComplete="off" hint="A first name is fine." />
+          <TextField label="Role" optional value={c.role} placeholder="Foster coordinator" onChange={(e) => edit({ role: e.target.value } as never)} />
+        </div>
+        <TextArea label="About them" optional rows={3} maxLength={160} value={c.bio} onChange={(e) => edit({ bio: e.target.value } as never)}
+          hint={`${160 - c.bio.length} characters left. One line about what they do.`} />
+      </div>
+    </section>
+  );
+}
+
+const PREPARE_ICONS: { id: PrepareIcon; label: string }[] = [
+  { id: 'heart', label: 'Heart' }, { id: 'clock', label: 'Time' }, { id: 'vet', label: 'Vet care' }, { id: 'home', label: 'Home' },
+  { id: 'paw', label: 'Paw' }, { id: 'wallet', label: 'Costs' }, { id: 'users', label: 'Household' },
+];
+
 function CommunityFields({ collection, c, edit, errors }: { collection: Collection; c: ContentByCollection[Collection]; edit: Edit; errors: FieldErrors }) {
+  if (collection === 'team') return <TeamFields c={c as TeamContent} edit={edit} errors={errors} />;
   const common = (bodyLabel: string, hint?: string) => (
     <>
       <TextField label="Title" value={(c as { title: string }).title} onChange={(e) => edit({ title: e.target.value } as never)} error={errors.title} />
@@ -190,12 +216,31 @@ function CommunityFields({ collection, c, edit, errors }: { collection: Collecti
     </>
   );
   let extra: React.ReactNode = null;
-  if (collection === 'stories') {
+  if (collection === 'prepare') {
+    const pr = c as PrepareContent;
+    extra = (
+      <ChoiceGroup legend="Icon">
+        <div className="kd-chips" role="radiogroup" aria-label="Icon">
+          {PREPARE_ICONS.map((ic) => (
+            <button key={ic.id} type="button" role="radio" className="kd-chip" aria-checked={pr.icon === ic.id} onClick={() => edit({ icon: ic.id } as never)}>
+              <Icon name={ic.id} size={18} />{ic.label}
+            </button>
+          ))}
+        </div>
+      </ChoiceGroup>
+    );
+  } else if (collection === 'stories') {
     const s = c as StoryContent;
     extra = (
       <>
-        <TextField label="Adopted" optional value={s.adoptedOn} placeholder="Sep 2026" onChange={(e) => edit({ adoptedOn: e.target.value } as never)} />
-        <ChoiceGroup legend="Photos"><PhotoInput photos={s.photos} onChange={(photos) => edit({ photos } as never)} max={4} /></ChoiceGroup>
+        <div className="kd-form__grid">
+          <TextField label="From" optional value={s.adopter} placeholder="the Reyes family" onChange={(e) => edit({ adopter: e.target.value } as never)} hint="Who sent the update. Ask before using a full name." />
+          <TextField label="Animal" optional value={s.animal} placeholder="Koda" onChange={(e) => edit({ animal: e.target.value } as never)} />
+          <TextField label="Date" optional value={s.adoptedOn} placeholder="Sep 2026" onChange={(e) => edit({ adoptedOn: e.target.value } as never)} />
+        </div>
+        <ChoiceGroup legend="Photos" hint="Up to 8. The first is the large one on the page.">
+          <PhotoInput photos={s.photos} onChange={(photos) => edit({ photos } as never)} max={8} />
+        </ChoiceGroup>
       </>
     );
   } else if (collection === 'events') {
@@ -229,7 +274,19 @@ function CommunityFields({ collection, c, edit, errors }: { collection: Collecti
     const g = c as GuideContent;
     extra = <TextField label="Reading time" optional value={g.readTime} placeholder="5 min read" onChange={(e) => edit({ readTime: e.target.value } as never)} />;
   }
-  const bodyLabel = { stories: 'Story', events: 'Details', volunteer: 'What they’ll do', donation: 'What the money is for', guides: 'Guide' }[collection as 'stories'] ?? 'Details';
+  const bodyLabel = { prepare: 'Explanation', stories: 'Update', events: 'Details', volunteer: 'What they’ll do', donation: 'What the money is for', guides: 'Guide' }[collection as 'stories'] ?? 'Details';
+  if (collection === 'prepare') {
+    return (
+      <section className="kd-panel">
+        <div className="kd-form">
+          <TextField label="Heading" value={(c as PrepareContent).title} placeholder="A lifetime commitment" onChange={(e) => edit({ title: e.target.value } as never)} error={errors.title} />
+          <TextArea label={bodyLabel} rows={3} maxLength={220} value={(c as PrepareContent).body} onChange={(e) => edit({ body: e.target.value } as never)}
+            hint={`${220 - (c as PrepareContent).body.length} characters left. Two or three short sentences read best.`} />
+          {extra}
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="kd-panel">
       <div className="kd-form">{common(bodyLabel)}{extra}</div>

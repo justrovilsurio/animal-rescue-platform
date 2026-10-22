@@ -47,7 +47,13 @@ export interface AdoptionContent extends AnimalBase {
   health: string;
 }
 
-export interface StoryContent { title: string; body: string; adoptedOn: string; photos: Photo[] }
+/** An update from an adopter after the animal went home ("Updates from adopters"). */
+export interface StoryContent { title: string; body: string; adoptedOn: string; photos: Photo[]; adopter: string; animal: string }
+/** One point in "Before you adopt": a responsibility the group wants adopters to weigh. */
+export type PrepareIcon = 'heart' | 'clock' | 'vet' | 'home' | 'paw' | 'wallet' | 'users';
+export interface PrepareContent { title: string; body: string; icon: PrepareIcon }
+/** A caretaker or volunteer shown in "Meet our team". */
+export interface TeamContent { name: string; role: string; bio: string; photo: Photo | null }
 export interface EventContent { title: string; body: string; date: string; time: string; where: string }
 export interface VolunteerContent { title: string; body: string; commitment: string }
 export interface DonationContent { title: string; body: string; goal: number; raised: number; account: string; qr: Photo | null }
@@ -56,8 +62,10 @@ export interface GuideContent { title: string; body: string; readTime: string }
 export interface ContentByCollection {
   rescues: RescueContent;
   adopt: AdoptionContent;
+  prepare: PrepareContent;
   stories: StoryContent;
   events: EventContent;
+  team: TeamContent;
   volunteer: VolunteerContent;
   donation: DonationContent;
   guides: GuideContent;

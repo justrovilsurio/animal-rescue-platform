@@ -17,6 +17,7 @@ import { Monogram } from '../public/components';
 import { SectionToggle, ThemePicker } from './parts';
 import { EditorRoute } from './Editor';
 import { blankContent } from './blank';
+import { PREPARE_STARTERS, TEAM_SAMPLES } from '../data/seed';
 
 const NAV = [
   { to: '/dashboard', label: 'Page', icon: 'layout', end: true },
@@ -76,6 +77,8 @@ function Screen({ title, children }: { title: string; children: React.ReactNode 
     </>
   );
 }
+
+const SAMPLES: Partial<Record<Collection, ContentByCollection[Collection][]>> = { team: TEAM_SAMPLES, prepare: PREPARE_STARTERS.slice(0, 3) };
 
 const count = (list: Entry<unknown>[], s?: 'draft' | 'pending') =>
   list.filter((e) => (s ? entryStatus(e) === s : e.published !== null)).length;
@@ -181,6 +184,7 @@ function PageTab() {
 }
 
 function EntriesTab({ groups }: { groups: Collection[] }) {
+  const toast = useToast();
   const { state, dispatch } = useStore();
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
@@ -191,6 +195,12 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
     const id = newId(show);
     dispatch({ type: 'entry/create', collection: show, id, content: blankContent(show), now: nowIso() });
     navigate(`/dashboard/edit/${show}/${id}`);
+  }
+  /** Drafts only: samples never reach visitors until the group publishes them. */
+  function addSamples() {
+    const samples = SAMPLES[show] ?? [];
+    samples.forEach((content) => dispatch({ type: 'entry/create', collection: show, id: newId(show), content, now: nowIso() }));
+    toast(`Added ${samples.length} sample ${samples.length === 1 ? 'entry' : 'entries'} as drafts. Edit or publish them when you’re ready.`);
   }
 
   return (
@@ -210,16 +220,18 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
       {list.length ? (
         <ul className="kd-list" role="list">
           {list.map((e) => {
-            const c = previewContent(e) as unknown as Record<string, unknown> & { photos?: { src: string }[]; qr?: { src: string } | null };
+            const c = previewContent(e) as unknown as Record<string, unknown> & { photos?: { src: string }[]; qr?: { src: string } | null; photo?: { src: string } | null };
             const status = entryStatus(e);
             const name = (c.name as string) || (c.title as string) || 'Untitled';
             const meta = show === 'adopt' ? [c.species, ageLabel((c as unknown as ContentByCollection['adopt']).age), c.location].filter(Boolean).join(' · ')
-              : (c.location as string) || (c.where as string) || (c.commitment as string) || (c.readTime as string) || (c.adoptedOn as string) || (c.account as string) || '';
-            const thumb = c.photos?.[0]?.src ?? c.qr?.src;
+              : show === 'stories' ? [c.animal, c.adopter && `from ${c.adopter}`, c.adoptedOn, c.photos?.length ? `${c.photos.length} ${c.photos.length === 1 ? 'photo' : 'photos'}` : ''].filter(Boolean).join(' · ')
+              : (c.role as string) || (c.location as string) || (c.where as string) || (c.commitment as string) || (c.readTime as string) || (c.account as string) || '';
+            const thumb = c.photos?.[0]?.src ?? c.qr?.src ?? c.photo?.src;
+            const placeholder = show === 'prepare' ? (c.icon as string) : show === 'events' ? 'calendar' : show === 'donation' ? 'gift' : show === 'guides' ? 'book' : 'users';
             return (
               <li className="kd-row" key={e.id}>
                 <Link className="kd-row__btn" to={`/dashboard/edit/${show}/${e.id}`}>
-                  <div className="kd-row__img">{thumb ? <img src={thumb} alt="" /> : <div className="kd-row__ph"><Icon name={show === 'events' ? 'calendar' : show === 'donation' ? 'gift' : show === 'guides' ? 'book' : 'users'} /></div>}</div>
+                  <div className="kd-row__img">{thumb ? <img src={thumb} alt="" /> : <div className="kd-row__ph"><Icon name={placeholder} /></div>}</div>
                   <div className="kd-row__text">
                     <p className="kd-row__name">{name}</p>
                     <div className="kd-row__meta"><StatusBadge status={status} />{meta ? <span>{meta}</span> : null}</div>
@@ -231,7 +243,14 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
           })}
         </ul>
       ) : (
-        <EmptyState title={`No ${sectionLabel(show).toLowerCase()} yet`} body="Add your first one. It stays a draft until you publish it." action={<Button variant="primary" size="s" icon="plus" onClick={add}>Add</Button>} />
+        <EmptyState title={`No ${sectionLabel(show).toLowerCase()} yet`}
+          body={SAMPLES[show] ? 'Add your first one, or start from samples you can edit or delete. Everything stays a draft until you publish it.' : 'Add your first one. It stays a draft until you publish it.'}
+          action={(
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <Button variant="primary" size="s" icon="plus" onClick={add}>Add</Button>
+              {SAMPLES[show] ? <Button variant="secondary" size="s" onClick={addSamples}>Add sample entries</Button> : null}
+            </div>
+          )} />
       )}
     </section>
   );

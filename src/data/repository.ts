@@ -1,5 +1,6 @@
 import type { AppState } from '../domain/types';
-import { SEED_VERSION, seedState } from './seed';
+import { seedState } from './seed';
+import { migrate } from './migrate';
 
 /**
  * The seam where Supabase plugs in later. Screens never touch storage
@@ -25,10 +26,8 @@ export class LocalStorageRepository implements Repository {
     try {
       const raw = this.storage.getItem(this.key);
       if (!raw) return seedState();
-      const parsed = JSON.parse(raw) as AppState;
-      // Unknown shape or older version: start fresh rather than crash.
-      if (!parsed || parsed.version !== SEED_VERSION || !parsed.page || !parsed.entries) return seedState();
-      return parsed;
+      // Older versions are migrated forward; an unknown shape starts fresh rather than crash.
+      return migrate(JSON.parse(raw)) ?? seedState();
     } catch {
       return seedState();
     }

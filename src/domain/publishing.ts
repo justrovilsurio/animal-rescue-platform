@@ -65,6 +65,9 @@ export function validateForPublish<C extends Collection>(collection: C, content:
     const c = content as ContentByCollection['adopt'];
     if (!c.name.trim()) errors.name = 'Give them a name, even a temporary one.';
     if (c.photos.length === 0) errors.photos = 'Add a cover photo. It is what visitors see first.';
+  } else if (collection === 'team') {
+    const c = content as ContentByCollection['team'];
+    if (!c.name.trim()) errors.name = 'Add their name. A first name is fine.';
   } else {
     const c = content as { title: string };
     if (!c.title.trim()) errors.title = 'Add a title.';

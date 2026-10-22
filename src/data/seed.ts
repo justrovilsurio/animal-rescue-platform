@@ -1,4 +1,4 @@
-import type { AdoptionContent, AppState, Entry, Photo } from '../domain/types';
+import type { AdoptionContent, AppState, Entry, Photo, PrepareContent, TeamContent } from '../domain/types';
 
 /**
  * Demo content so every screen renders at real density.
@@ -17,7 +17,27 @@ function pending<T>(id: string, content: T, edits: Partial<T>): Entry<T> {
   return { id, createdAt: T0, publishedAt: T0, published: content, draft: { ...content, ...edits } };
 }
 
-export const SEED_VERSION = 1;
+export const SEED_VERSION = 2;
+
+/**
+ * "Before you adopt" starter points. Groups that predate the section get the
+ * first three as drafts (see migrate.ts), so they edit rather than start blank.
+ */
+/** Sample team members, for the demo and for the "Add sample entries" button on an empty team list. */
+export const TEAM_SAMPLES: TeamContent[] = [
+  { name: 'Ana', role: 'Founder and foster coordinator', bio: 'Matches every rescue with a foster home, usually by text at midnight.', photo: null },
+  { name: 'Jomar', role: 'Rescue driver', bio: 'Has picked up dogs from flooded lots, highway shoulders and one jeepney roof.', photo: null },
+  { name: 'Bea', role: 'Vet liaison', bio: 'Keeps the vaccine schedule and talks clinics into discounts.', photo: null },
+];
+
+export const PREPARE_STARTERS: PrepareContent[] = [
+  { icon: 'heart', title: 'A lifetime commitment', body: 'Dogs and cats can live 10 to 15 years or more. Adopt only if you can care for them through moves, new jobs and new babies.' },
+  { icon: 'clock', title: 'Time every day', body: 'Feeding, walks, play and training happen every single day, not just on weekends.' },
+  { icon: 'vet', title: 'Vet care and its costs', body: 'Plan for food, yearly vaccines, deworming, spay or neuter, and the occasional emergency visit.' },
+  { icon: 'home', title: 'A safe home', body: 'Secure gates and windows, shade and clean water. No chaining, and no roaming the street.' },
+  { icon: 'paw', title: 'Patience while they settle', body: 'Rescued animals can be shy or anxious at first. Give them weeks, not days, to trust you.' },
+  { icon: 'users', title: 'Everyone at home agrees', body: 'Talk it through with the whole household, including landlords, before you apply.' },
+];
 
 export function seedState(): AppState {
   return {
@@ -32,7 +52,7 @@ export function seedState(): AppState {
       theme: 'moss',
       logo: null,
       banner: p('pippa-corgi'),
-      visible: { rescues: true, adopt: true, stories: true, events: true, volunteer: true, donation: true, guides: true },
+      visible: { rescues: true, adopt: true, prepare: true, stories: true, events: true, team: true, volunteer: true, donation: true, guides: true },
       publishedAt: null,
     },
     entries: {
@@ -65,14 +85,19 @@ export function seedState(): AppState {
           personality: 'Shy for the first hour, then your shadow forever.', health: 'Vaccinated.' },
           { age: { mode: 'approx', text: 'About 4 months' } }),
       ],
+      prepare: PREPARE_STARTERS.map((c, i) => live(`prep-${i + 1}`, c)),
       stories: [
-        live('s-koda', { title: 'Koda went home to a family with a backyard', body: 'Eight months with us, two failed meet-and-greets, then the Reyes family in Fairview walked in and he sat on their feet.', adoptedOn: 'Sep 2026', photos: [p('koda-husky')] }),
-        live('s-yuki', { title: 'Yuki, from a box by the highway to a balcony in Makati', body: 'Found at four weeks old. Her adopter sends us a photo every Sunday.', adoptedOn: 'Jul 2026', photos: [p('snow-husky-pup')] }),
-        draftOnly('s-smoke', { title: 'Smoke learned to trust people again', body: '', adoptedOn: 'Oct 2026', photos: [p('husky-grey')] }),
+        live('s-koda', { title: 'Koda went home to a family with a backyard', body: 'Eight months with us, two failed meet-and-greets, then the Reyes family in Fairview walked in and he sat on their feet. Two months on, he has a sandpit, a best friend next door and opinions about the mail carrier.', adoptedOn: 'Sep 2026', photos: [p('koda-husky'), p('husky-grey'), p('snow-husky-pup'), p('pillow-beagle'), p('pippa-corgi')], adopter: 'the Reyes family', animal: 'Koda' }),
+        live('s-yuki', { title: 'Yuki, from a box by the highway to a balcony in Makati', body: 'Found at four weeks old. Her adopter sends us a photo every Sunday, and this week she learned to sit for treats.', adoptedOn: 'Jul 2026', photos: [p('snow-husky-pup'), p('basket-puppy')], adopter: 'Carla', animal: 'Yuki' }),
+        draftOnly('s-smoke', { title: 'Smoke learned to trust people again', body: '', adoptedOn: 'Oct 2026', photos: [p('husky-grey')], adopter: '', animal: 'Smoke' }),
       ],
       events: [
         live('e-market', { title: 'Adoption morning at the Diliman Sunday market', body: 'Meet Mango, Tala and Saffron in person. Bring a leash if you have one.', date: '2026-11-08', time: '9:00 am – 1:00 pm', where: 'UP Diliman, Quezon City' }),
         live('e-rabies', { title: 'Free anti-rabies vaccination drive', body: 'With the city veterinary office. Dogs and cats over three months.', date: '2026-11-22', time: '8:00 am – 12:00 noon', where: 'Barangay Concepcion Uno, Marikina' }),
+      ],
+      team: [
+        ...TEAM_SAMPLES.map((c) => live(`t-${c.name.toLowerCase()}`, c)),
+        draftOnly('t-paolo', { name: 'Paolo', role: 'Adoption interviews', bio: '', photo: null }),
       ],
       volunteer: [
         live('v-walkers', { title: 'Weekend dog walkers', body: 'Two hours on Saturday or Sunday morning in Cubao. No experience needed; we pair you with a regular.', commitment: '2 hrs / week' }),

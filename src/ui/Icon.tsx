@@ -29,6 +29,8 @@ const PATHS: Record<string, string> = {
   trash: 'M5 7h14 M10 7V4h4v3 M7 7l1 13h8l1-13',
   undo: 'M9 14L4 9l5-5 M4 9h10a6 6 0 0 1 0 12h-3',
   star: 'M12 4l2.4 5 5.6.6-4.2 3.8 1.2 5.6L12 16.3 7 19l1.2-5.6L4 9.6 9.6 9z',
+  vet: 'M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z',
+  wallet: 'M4 7.5A1.5 1.5 0 0 1 5.5 6H18a2 2 0 0 1 2 2v10a1 1 0 0 1-1 1H5.5A1.5 1.5 0 0 1 4 17.5z M4 8l11-3.5V6 M16.5 12.5h.01',
 };
 
 export type IconName = keyof typeof PATHS;

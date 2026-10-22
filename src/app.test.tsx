@@ -5,7 +5,8 @@ import { MemoryRouter, useNavigate, type NavigateFunction } from 'react-router-d
 import { App } from './App';
 import { StoreProvider } from './state/store';
 import { ToastProvider } from './ui/Toast';
-import { LocalStorageRepository } from './data/repository';
+import { LocalStorageRepository, STORAGE_KEY } from './data/repository';
+import { seedState } from './data/seed';
 
 /** Render the whole app at a path, and hand back a navigate() for moving around. */
 function setup(path: string) {
@@ -153,5 +154,36 @@ describe('adoption gallery', () => {
     await act(() => new Promise((r) => setTimeout(r, 250)));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1, name: 'For Adoption' })).toBeInTheDocument();
+  });
+});
+
+describe('new community sections', () => {
+  it('shows Before you adopt, adopter updates and the team to visitors, but not their drafts', async () => {
+    const { user, go } = setup('/dashboard');
+    await publishPage(user, go);
+    go('/second-wind');
+    expect(await screen.findByRole('heading', { level: 2, name: 'Before you adopt' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'A lifetime commitment' })).toBeInTheDocument();
+
+    const updates = screen.getByRole('region', { name: 'Updates from adopters' });
+    expect(within(updates).getByText('Koda · from the Reyes family · Sep 2026')).toBeInTheDocument();
+    expect(within(updates).getByText(/more photos/)).toBeInTheDocument(); // five photos: three shown, "+2"
+
+    const team = screen.getByRole('region', { name: 'Meet our team' });
+    expect(within(team).getByRole('heading', { name: 'Ana' })).toBeInTheDocument();
+    expect(within(team).queryByRole('heading', { name: 'Paolo' })).not.toBeInTheDocument(); // draft
+  });
+});
+
+describe('sample entries', () => {
+  it('fills an empty team list with sample drafts, without touching anything else', async () => {
+    // A save from before "Meet our team" existed: the migration leaves the team empty.
+    const { team: _t, prepare: _p, ...v1Entries } = seedState().entries;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...seedState(), version: 1, entries: v1Entries }));
+    const { user } = setup('/dashboard/community?show=team');
+
+    await user.click(await screen.findByRole('button', { name: 'Add sample entries' }));
+    for (const name of ['Ana', 'Jomar', 'Bea']) expect(screen.getByText(name)).toBeInTheDocument();
+    expect(screen.getAllByText('Draft')).toHaveLength(3); // drafts only: visitors see nothing until published
   });
 });

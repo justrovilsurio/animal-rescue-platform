@@ -1,14 +1,14 @@
 {
   "0": "Dashboard.tsx",
-  "1": "store.tsx",
+  "1": "StatusBadge",
   "2": "PublicSite.tsx",
   "3": "package.json",
   "4": "animals.ts",
-  "5": "Icon.tsx",
+  "5": "Kindred: working prototype",
   "6": "compilerOptions",
-  "7": "PhotoInput.tsx",
+  "7": "Editor.tsx",
   "8": "CLAUDE.md",
   "9": ".scrollIntoView",
-  "10": "Editor.tsx",
-  "11": "parts.tsx"
+  "10": "publishing.ts",
+  "11": "Icon"
 }

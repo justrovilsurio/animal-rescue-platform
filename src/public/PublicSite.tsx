@@ -77,15 +77,17 @@ function useJump() {
   return { jump, atHome };
 }
 
+const TOPBAR_KEYS: Collection[] = ['rescues', 'adopt', 'stories', 'team', 'donation'];
+
 function TopBar() {
   const { state } = useStore();
   const { base } = usePublic();
   const shown = useShownSections();
   const { jump, atHome } = useJump();
-  const links = shown.map((k) => {
-    const s = SECTION_ORDER.find((x) => x.key === k)!;
-    return <a key={k} href={`#sec-${k}`} onClick={jump(k)}>{s.short}</a>;
-  });
+  const link = (k: Collection) => <a key={k} href={`#sec-${k}`} onClick={jump(k)}>{SECTION_ORDER.find((x) => x.key === k)!.short}</a>;
+  const links = shown.map(link);
+  // The desktop bar only has room for the essentials; the jump row and footer list every section.
+  const keyLinks = shown.filter((k) => TOPBAR_KEYS.includes(k)).map(link);
 
   return (
     <>
@@ -94,7 +96,7 @@ function TopBar() {
         <Link className="kd-topbar__brand" to={base} aria-label={`${state.page.name} home`}>
           <Monogram page={state.page} className="kd-topbar__mono" /><span>{state.page.name}</span>
         </Link>
-        <nav className="kd-topbar__links" aria-label="Page sections">{links}</nav>
+        <nav className="kd-topbar__links" aria-label="Page sections">{keyLinks}</nav>
         <div className="kd-topbar__end">
           {state.page.email ? <ButtonA variant="ink" size="s" iconEnd="mail" href={mailto(state.page.email)}>Contact</ButtonA> : null}
         </div>
@@ -180,12 +182,15 @@ function CommunitySection({ kind }: { kind: (typeof COMMUNITY_KEYS)[number] }) {
   const { preview } = usePublic();
   const items = useVisibleEntries(kind, preview);
   const label = SECTION_ORDER.find((s) => s.key === kind)!.label;
-  const twoUp = kind === 'events' || kind === 'donation';
+  const twoUp = kind === 'events' || kind === 'donation' || kind === 'stories';
+  const field = { stories: 'kd-sec--field-stories', team: 'kd-sec--field-team', prepare: 'kd-sec--prepare' }[kind as string];
+  const description = { prepare: 'What to think through before you apply.', team: 'The caretakers and volunteers behind every rescue.' }[kind as string];
+  const layout = kind === 'prepare' ? 'kd-prepgrid' : kind === 'team' ? 'kd-teamrail' : twoUp ? 'kd-cols kd-cols--2' : 'kd-cols';
   return (
-    <section className={['kd-sec', kind === 'stories' && 'kd-sec--field-stories'].filter(Boolean).join(' ')} id={`sec-${kind}`} aria-labelledby={`h-${kind}`}>
+    <section className={['kd-sec', field].filter(Boolean).join(' ')} id={`sec-${kind}`} aria-labelledby={`h-${kind}`}>
       <div className="kd-wrap">
-        <SectionHeading id={`h-${kind}`} title={label} />
-        <div className={twoUp ? 'kd-cols kd-cols--2' : 'kd-cols'} style={{ ['--n' as string]: Math.min(3, items.length) }}>
+        <SectionHeading id={`h-${kind}`} title={label} description={description} />
+        <div className={layout} style={{ ['--n' as string]: Math.min(kind === 'team' ? 4 : 3, items.length) }}>
           {items.map((it) => <CommunityCard key={it.id} kind={kind} item={it.content} page={state.page} status={it.status} />)}
         </div>
       </div>

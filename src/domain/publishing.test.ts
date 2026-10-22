@@ -99,5 +99,11 @@ describe('validateForPublish', () => {
 
   it('requires a title for community entries', () => {
     expect(validateForPublish('guides', { title: '', body: 'x', readTime: '' })).toEqual({ title: 'Add a title.' });
+    expect(validateForPublish('prepare', { title: ' ', body: 'x', icon: 'heart' })).toEqual({ title: 'Add a title.' });
+  });
+
+  it('requires only a name for team members; the photo is optional', () => {
+    expect(validateForPublish('team', { name: '', role: 'Driver', bio: '', photo: null })).toEqual({ name: 'Add their name. A first name is fine.' });
+    expect(validateForPublish('team', { name: 'Ana', role: '', bio: '', photo: null })).toEqual({});
   });
 });
