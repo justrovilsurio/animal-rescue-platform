@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import type { AdoptionContent, AdoptionFilters, GroupPage, RescueContent, StoryContent, EventContent, VolunteerContent, DonationContent, GuideContent, CommunityCollection, PrepareContent, TeamContent } from '../domain/types';
 import { AGE_FILTER_OPTIONS, EMPTY_FILTERS, factsLine } from '../domain/animals';
 import { Icon } from '../ui/Icon';
+import { Img } from '../ui/Img';
 import { ButtonA, Button, ButtonLink } from '../ui/Button';
 import { StatusBadge } from '../ui/StatusBadge';
 import type { EntryStatus } from '../domain/types';
@@ -91,7 +92,7 @@ export function StatTiles({ adoptCount, rescueCount, storyCount, adoptTo, rescue
   if (!adoptCount && !rescueCount && !storyCount) return null;
   return (
     <div className="kd-wrap">
-      <div className="kd-stats">
+      <div className="kd-stats" data-reveal="stagger">
         {adoptCount ? (
           <Link className="kd-stat kd-stat--lime" to={adoptTo}>
             <b>{adoptCount}</b><span>{adoptCount === 1 ? 'animal looking for a home' : 'animals looking for a home'}</span><PawBadge />
@@ -99,7 +100,7 @@ export function StatTiles({ adoptCount, rescueCount, storyCount, adoptTo, rescue
         ) : null}
         {rescueCount ? (
           <Link className="kd-stat kd-stat--navy" to={rescuesTo}>
-            {photo ? <img className="kd-stat__img" src={photo} alt="" loading="lazy" /> : null}
+            {photo ? <Img className="kd-stat__img" src={photo} alt="" loading="lazy" /> : null}
             <b>{rescueCount}</b><span>{rescueCount === 1 ? 'rescue story' : 'rescue stories'}</span><PawBadge />
           </Link>
         ) : null}
@@ -130,7 +131,7 @@ export function Ribbons({ names, place }: { names: string[]; place: string }) {
 export function SectionHeading({ id, title, description, count, to, level = 2 }: { id: string; title: string; description?: string; count?: number; to?: string; level?: 1 | 2 }) {
   const H = level === 1 ? 'h1' : 'h2';
   return (
-    <div className="kd-sh">
+    <div className="kd-sh" data-reveal="rise">
       <div>
         <H className="kd-sh__title" id={id}>{title}</H>
         {description ? <p className="kd-sh__desc">{description}</p> : null}
@@ -151,7 +152,7 @@ export function AnimalCard({ id, kind, content, status }: { id: string; kind: 'r
     return (
       <Link className="kd-card kd-card--rescue" to={to} state={{ background: location }} aria-label={`${r.name || 'Untitled'}, rescue story`}>
         <div className="kd-card__media">
-          {cover ? <img src={cover.src} alt="" loading="lazy" decoding="async" /> : null}
+          {cover ? <Img src={cover.src} alt="" loading="lazy" decoding="async" /> : null}
           {preview && status && status !== 'live' ? <StatusBadge status={status} className="kd-card__badge" /> : null}
           <div className="kd-card__over">
             <p className="kd-card__name">{r.name || 'Untitled'}</p>
@@ -166,7 +167,7 @@ export function AnimalCard({ id, kind, content, status }: { id: string; kind: 'r
   return (
     <Link className="kd-card kd-card--adoption" to={to} state={{ background: location }} aria-label={[a.name || 'Untitled', facts, a.location].filter(Boolean).join(', ')}>
       <div className="kd-card__media">
-        {cover ? <img src={cover.src} alt="" loading="lazy" decoding="async" /> : null}
+        {cover ? <Img src={cover.src} alt="" loading="lazy" decoding="async" /> : null}
         {preview && status && status !== 'live' ? <StatusBadge status={status} className="kd-card__badge" /> : null}
       </div>
       <div className="kd-card__body">
@@ -246,7 +247,7 @@ export function CommunityCard({ kind, item, page, status }: { kind: CommunityCol
     return (
       <article className="kd-member">
         <div className="kd-member__photo">
-          {t.photo ? <img src={t.photo.src} alt={t.name ? `${t.name}, ${t.role || 'team member'}` : ''} loading="lazy" />
+          {t.photo ? <Img src={t.photo.src} alt={t.name ? `${t.name}, ${t.role || 'team member'}` : ''} loading="lazy" />
             : <span className="kd-member__initials" aria-hidden="true">{initials}<PawMark size={34} className="kd-member__paw" /></span>}
           {badge ? <div className="kd-card__badge">{badge}</div> : null}
         </div>
@@ -267,7 +268,7 @@ export function CommunityCard({ kind, item, page, status }: { kind: CommunityCol
           <div className="kd-mosaic" data-count={shown.length}>
             {shown.map((ph, i) => (
               <div className="kd-mosaic__cell" key={ph.id + i}>
-                <img src={ph.src} alt={i === 0 && s.animal ? `${s.animal} at home` : ''} loading="lazy" />
+                <Img src={ph.src} alt={i === 0 && s.animal ? `${s.animal} at home` : ''} loading="lazy" />
                 {i === shown.length - 1 && more > 0 ? <span className="kd-mosaic__more">+{more}<span className="kd-sr"> more photos</span></span> : null}
               </div>
             ))}

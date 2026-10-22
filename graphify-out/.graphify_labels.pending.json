@@ -1,14 +1,15 @@
 {
   "0": "Dashboard.tsx",
-  "1": "StatusBadge",
+  "1": "vite-env.d.ts",
   "2": "PublicSite.tsx",
   "3": "package.json",
-  "4": "animals.ts",
-  "5": "Kindred: working prototype",
+  "4": "store.tsx",
+  "5": "Field.tsx",
   "6": "compilerOptions",
   "7": "Editor.tsx",
   "8": "CLAUDE.md",
   "9": ".scrollIntoView",
-  "10": "publishing.ts",
-  "11": "Icon"
+  "10": "seed.ts",
+  "11": "Icon.tsx",
+  "12": "scripts"
 }

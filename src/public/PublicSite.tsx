@@ -10,6 +10,7 @@ import { EmptyState } from '../ui/EmptyState';
 import { PublicCtx, usePublic } from './context';
 import { AdoptionFiltersBar, AnimalCard, CommunityCard, GroupHeader, Monogram, PawMark, Ribbons, SectionHeading, StatTiles, mailto, messengerUrl } from './components';
 import { AnimalDetailRoute } from './AnimalDetail';
+import { PageSkeleton, useFontsReady, useReveal } from './motion';
 
 /**
  * Everything a visitor sees at /:slug, and what a group sees at
@@ -20,9 +21,12 @@ export function PublicSite({ preview = false }: { preview?: boolean }) {
   const { slug } = useParams();
   const location = useLocation();
   const base = preview ? '/dashboard/preview' : `/${state.page.slug}`;
+  const fonts = useFontsReady();
+  useReveal();
 
   if (!preview && slug !== state.page.slug) return <NotFound />;
   if (!preview && !state.page.publishedAt) return <NotPublic />;
+  if (fonts !== 'ready') return <div data-gtheme={state.page.theme}>{fonts === 'skeleton' ? <PageSkeleton /> : <div className="kd-pub" />}</div>;
 
   const background = (location.state as { background?: Location } | null)?.background;
 
@@ -148,7 +152,7 @@ function Home() {
         <section className="kd-sec kd-sec--field-rescue" id="sec-rescues" aria-labelledby="h-rescues">
           <div className="kd-wrap">
             <SectionHeading id="h-rescues" title="Rescue Gallery" description="Where they came from." count={rescues.length} to={`${base}/rescues`} />
-            <div className="kd-rail" style={{ ['--n' as string]: Math.min(4, rescues.length), ['--max' as string]: rescues.length >= 3 ? '1fr' : '360px' }}>
+            <div className="kd-rail" data-reveal="stagger" style={{ ['--n' as string]: Math.min(4, rescues.length), ['--max' as string]: rescues.length >= 3 ? '1fr' : '360px' }}>
               {rescues.slice(0, 4).map((r) => <AnimalCard key={r.id} id={r.id} kind="rescues" content={r.content} status={r.status} />)}
             </div>
           </div>
@@ -158,7 +162,7 @@ function Home() {
         <section className="kd-sec kd-sec--field-adopt" id="sec-adopt" aria-labelledby="h-adopt">
           <div className="kd-wrap">
             <SectionHeading id="h-adopt" title="For Adoption" description="Looking for a home right now." count={adopt.length} to={`${base}/adopt`} />
-            <div className="kd-grid kd-grid--4">
+            <div className="kd-grid kd-grid--4" data-reveal="stagger">
               {adopt.slice(0, 4).map((a) => <AnimalCard key={a.id} id={a.id} kind="adopt" content={a.content} status={a.status} />)}
             </div>
             <div style={{ marginTop: 24 }}>
@@ -190,7 +194,7 @@ function CommunitySection({ kind }: { kind: (typeof COMMUNITY_KEYS)[number] }) {
     <section className={['kd-sec', field].filter(Boolean).join(' ')} id={`sec-${kind}`} aria-labelledby={`h-${kind}`}>
       <div className="kd-wrap">
         <SectionHeading id={`h-${kind}`} title={label} description={description} />
-        <div className={layout} style={{ ['--n' as string]: Math.min(kind === 'team' ? 4 : 3, items.length) }}>
+        <div className={layout} data-reveal="stagger" style={{ ['--n' as string]: Math.min(kind === 'team' ? 4 : 3, items.length) }}>
           {items.map((it) => <CommunityCard key={it.id} kind={kind} item={it.content} page={state.page} status={it.status} />)}
         </div>
       </div>
@@ -227,7 +231,7 @@ function Gallery({ kind }: { kind: 'rescues' | 'adopt' }) {
               </div>
             ) : null}
             {list.length ? (
-              <div className="kd-grid kd-grid--4">
+              <div className="kd-grid kd-grid--4" data-reveal="stagger">
                 {list.map((a) => <AnimalCard key={a.__id} id={a.__id} kind={kind} content={a} status={a.__status} />)}
               </div>
             ) : entries.length ? (
@@ -251,7 +255,7 @@ function Footer() {
   return (
     <footer className="kd-foot">
       <div className="kd-wrap">
-        <div className="kd-foot__panel">
+        <div className="kd-foot__panel" data-reveal="rise">
           <p className="kd-foot__name">{p.name}</p>
           <div className="kd-foot__side">
             {p.email || p.facebook ? <p className="kd-foot__lede">Questions about an animal, or how you can help? Write to us. A volunteer usually replies within a day.</p> : null}
@@ -262,7 +266,7 @@ function Footer() {
           </div>
         </div>
         {shown.length ? (
-          <nav className="kd-tags" aria-label="Sections">
+          <nav className="kd-tags" aria-label="Sections" data-reveal="drop">
             {shown.map((k) => <a key={k} href={`#sec-${k}`} onClick={jump(k)}>{SECTION_ORDER.find((x) => x.key === k)!.short}</a>)}
           </nav>
         ) : null}

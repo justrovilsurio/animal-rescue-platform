@@ -603,7 +603,8 @@ a.kd-stat:active { transform: scale(0.985); }
 .kd-dash__nav { order: 2; }
 .kd-dash__top { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--paper); position: sticky; top: 0; z-index: 4; }
 .kd-dash__title { font-family: var(--font-display); font-size: 26px; line-height: 30px; font-weight: 400; margin: 0; }
-.kd-dash__main { padding: 4px 16px 120px; display: grid; gap: 20px; align-content: start; }
+/* minmax(0, …): a long tab strip scrolls inside its panel instead of widening the page */
+.kd-dash__main { padding: 4px 16px 120px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-content: start; }
 .kd-dash__nav { position: sticky; bottom: 0; z-index: 4; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); box-shadow: 0 -1px 0 var(--line); padding: 6px 4px calc(6px + env(safe-area-inset-bottom)); }
 .kd-dash__nav button { display: grid; justify-items: center; gap: 2px; min-height: 52px; border: 0; background: none; cursor: pointer; font-size: 13px; line-height: 16px; color: var(--ink-muted); border-radius: var(--radius-s); }
 .kd-dash__nav button[aria-current="page"] { color: var(--brand); }
@@ -650,7 +651,7 @@ a.kd-stat:active { transform: scale(0.985); }
   .kd-dash__body { grid-column: 2; grid-row: 1; min-width: 0; }
   .kd-dash__top { padding: 28px 40px 14px; }
   .kd-dash__title { font-size: 40px; line-height: 44px; }
-  .kd-dash__main { padding: 8px 40px 48px; max-width: 1080px; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .kd-dash__main { padding: 8px 40px 48px; max-width: 1080px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
   .kd-dash__main > .kd-span { grid-column: 1 / -1; }
   .kd-panel { padding: 24px; }
   .kd-status { padding: 28px 32px; justify-items: start; }
@@ -664,7 +665,80 @@ a.kd-stat:active { transform: scale(0.985); }
 }
 .kd-dash__navbrand { display: none; }
 
+/* ---------- Skeletons: Facebook-style shimmer ---------- */
+/* Placeholder blocks, and every photo until it arrives (the shimmer is the <img>'s own background). */
+.kd-sk, .kd-img:not([data-loaded]) {
+  background-color: var(--surface-sunk);
+  background-image: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.7) 50%, transparent 70%);
+  background-size: 220% 100%; background-repeat: no-repeat;
+  animation: kd-shimmer 1.4s linear infinite;
+}
+@keyframes kd-shimmer { from { background-position: 160% 0; } to { background-position: -60% 0; } }
+/* photos sharpen into place once loaded */
+.kd-img[data-loaded] { animation: kd-sharpen 560ms var(--kd-ease-out); }
+@keyframes kd-sharpen { from { filter: blur(12px) saturate(0.5); transform: scale(1.04); } }
+
+.kd-sk { display: block; flex: none; border-radius: 10px; max-width: 100%; }
+.kd-sk--pill { border-radius: var(--radius-full); }
+.kd-sk--round { border-radius: 50%; }
+/* blocks sitting on the coloured top bar take a tint of that colour instead of grey */
+.kd-sk--on {
+  background-color: color-mix(in oklab, var(--kd-g-on) 16%, var(--kd-g));
+  background-image: linear-gradient(100deg, transparent 30%, color-mix(in oklab, var(--kd-g) 50%, #ffffff) 50%, transparent 70%);
+}
+.kd-skel { animation: kd-fade 260ms ease both; }
+@keyframes kd-fade { from { opacity: 0; } }
+.kd-skel .kd-topbar { gap: 14px; }
+.kd-skel__links { display: none; }
+.kd-skel__end { margin-left: auto; }
+.kd-skel__text { display: grid; gap: 14px; }
+.kd-skel__gap { margin-top: 12px; }
+.kd-skel__row { display: flex; gap: 12px; margin-top: 16px; }
+/* the exact five-lobed hero outline, so the photo lands in the same shape */
+.kd-skel__blob { position: absolute; inset: 0; border-radius: 0; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cpath%20d%3D%22M200%208C233.4%208%20260%2048.3%20292.9%2072.2C325.7%2096.1%20372.3%20108.9%20382.6%20140.7C392.9%20172.5%20362.8%20210.2%20350.3%20248.8C337.7%20287.5%20339.9%20335.7%20312.9%20355.3C285.8%20375%20240.6%20358%20200%20358C159.4%20358%20114.2%20375%2087.1%20355.3C60.1%20335.7%2062.3%20287.5%2049.7%20248.8C37.2%20210.2%207.1%20172.5%2017.4%20140.7C27.7%20108.9%2074.3%2096.1%20107.1%2072.2C140%2048.3%20166.6%208%20200%208Z%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20400%22%3E%3Cpath%20d%3D%22M200%208C233.4%208%20260%2048.3%20292.9%2072.2C325.7%2096.1%20372.3%20108.9%20382.6%20140.7C392.9%20172.5%20362.8%20210.2%20350.3%20248.8C337.7%20287.5%20339.9%20335.7%20312.9%20355.3C285.8%20375%20240.6%20358%20200%20358C159.4%20358%20114.2%20375%2087.1%20355.3C60.1%20335.7%2062.3%20287.5%2049.7%20248.8C37.2%20210.2%207.1%20172.5%2017.4%20140.7C27.7%20108.9%2074.3%2096.1%20107.1%2072.2C140%2048.3%20166.6%208%20200%208Z%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat; }
+.kd-skel__tile { min-height: 148px; border-radius: var(--radius-l); }
+.kd-skel__h { margin-bottom: 32px; }
+.kd-skel__card { display: grid; gap: 10px; justify-items: center; padding: 10px 10px 20px; border-radius: var(--radius-l); background: var(--surface); box-shadow: var(--shadow-card); }
+.kd-skel__media { width: 100%; aspect-ratio: 1; border-radius: 24px; margin-bottom: 6px; }
+@container (min-width: 720px) { .kd-skel__tile { min-height: 180px; } }
+@container (min-width: 900px) { .kd-skel__links { display: flex; gap: 28px; margin-left: auto; } .kd-skel__end { margin-left: 16px; } }
+
+/* ---------- Scroll reveals: content arrives as it comes into view, once ---------- */
+[data-reveal] > :nth-child(2) { --i: 1; }
+[data-reveal] > :nth-child(3) { --i: 2; }
+[data-reveal] > :nth-child(4) { --i: 3; }
+[data-reveal] > :nth-child(5) { --i: 4; }
+[data-reveal] > :nth-child(6) { --i: 5; }
+[data-reveal] > :nth-child(7) { --i: 6; }
+[data-reveal] > :nth-child(n+8) { --i: 7; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal="rise"]:not([data-shown]),
+  [data-reveal="stagger"]:not([data-shown]) > *,
+  [data-reveal="drop"]:not([data-shown]) > * { opacity: 0; }
+  /* headings and panels: rise and come into focus, like the hero */
+  [data-reveal="rise"][data-shown] { animation: kd-rise 800ms var(--kd-ease-out) backwards; }
+  /* card grids: one after another */
+  [data-reveal="stagger"][data-shown] > * { animation: kd-in 760ms var(--kd-ease-out) backwards; animation-delay: calc(var(--i, 0) * 80ms); }
+  /* stat tiles follow the hero on first load */
+  .kd-stats[data-shown] > * { animation-delay: calc(280ms + var(--i, 0) * 90ms); }
+  /* team portraits wipe up from the bottom */
+  .kd-teamrail[data-shown] .kd-member__photo { animation: kd-wipe 900ms var(--kd-ease-out) backwards; animation-delay: calc(80ms + var(--i, 0) * 90ms); }
+  /* footer pills drop into their pile with a little bounce */
+  [data-reveal="drop"][data-shown] > * { animation: kd-drop 720ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
+}
+@keyframes kd-in { from { opacity: 0; transform: translateY(32px); } }
+@keyframes kd-wipe { from { clip-path: inset(100% 0 0 0 round 28px); } to { clip-path: inset(0 0 0 0 round 28px); } }
+@keyframes kd-drop { from { opacity: 0; transform: translateY(-72px) rotate(calc(var(--r, 0deg) - 16deg)); } }
+
+/* the top bar lifts off the page once you scroll (scroll-driven, where supported) */
+@supports (animation-timeline: scroll()) {
+  .kd-pub > .kd-topbar { animation: kd-bar-lift linear both; animation-timeline: scroll(root block); animation-range: 0 140px; }
+}
+@keyframes kd-bar-lift { to { box-shadow: 0 12px 28px -14px rgba(21, 31, 48, 0.32); } }
+
 @media (prefers-reduced-motion: reduce) {
+  .kd-sk, .kd-img:not([data-loaded]) { animation: none; background-image: none; }
+  .kd-img[data-loaded], .kd-skel { animation: none; }
   .kd-root *, .kd-proto *, .kd-ov * { transition-property: opacity, background-color, color !important; animation-duration: 1ms !important; }
   .kd-ov__panel, .kd-toast, .kd-card__media img, .kd-card, a.kd-stat, .kd-pawbadge, .kd-tags a:hover { transform: none !important; }
   .kd-card, a.kd-stat, .kd-pawbadge, .kd-tags a { transition-property: opacity, background-color, color, box-shadow !important; }

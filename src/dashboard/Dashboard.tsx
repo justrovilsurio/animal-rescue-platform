@@ -8,6 +8,7 @@ import type { Collection, ContentByCollection, Entry, GroupPage } from '../domai
 import { newId, nowIso } from '../lib/ids';
 import { useToast } from '../ui/Toast';
 import { Icon } from '../ui/Icon';
+import { Img } from '../ui/Img';
 import { Button, ButtonLink } from '../ui/Button';
 import { StatusBadge } from '../ui/StatusBadge';
 import { TextArea, TextField, ChoiceGroup } from '../ui/Field';
@@ -231,7 +232,7 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
             return (
               <li className="kd-row" key={e.id}>
                 <Link className="kd-row__btn" to={`/dashboard/edit/${show}/${e.id}`}>
-                  <div className="kd-row__img">{thumb ? <img src={thumb} alt="" /> : <div className="kd-row__ph"><Icon name={placeholder} /></div>}</div>
+                  <div className="kd-row__img">{thumb ? <Img src={thumb} alt="" /> : <div className="kd-row__ph"><Icon name={placeholder} /></div>}</div>
                   <div className="kd-row__text">
                     <p className="kd-row__name">{name}</p>
                     <div className="kd-row__meta"><StatusBadge status={status} />{meta ? <span>{meta}</span> : null}</div>

@@ -4,6 +4,7 @@ import type { AdoptionContent, RescueContent } from '../domain/types';
 import { ageLabel } from '../domain/animals';
 import { useStore, useVisibleEntries } from '../state/store';
 import { Icon } from '../ui/Icon';
+import { Img } from '../ui/Img';
 import { ButtonA } from '../ui/Button';
 import { useToast } from '../ui/Toast';
 import { usePublic } from './context';
@@ -144,14 +145,14 @@ function AnimalDetail({ kind, content, onClose }: { kind: 'rescues' | 'adopt'; c
         <div className="kd-ov__photos">
           <div className="kd-ov__track" ref={trackRef} onScroll={onScroll} tabIndex={photos.length > 1 ? 0 : -1} aria-label={photos.length > 1 ? `Photos of ${name}. Scroll sideways for more.` : undefined}>
             {photos.map((p, i) => (
-              <div className="kd-ov__slide" key={p.id}><img src={p.src} alt={i === 0 ? name : `${name}, photo ${i + 1}`} /></div>
+              <div className="kd-ov__slide" key={p.id}><Img src={p.src} alt={i === 0 ? name : `${name}, photo ${i + 1}`} /></div>
             ))}
           </div>
           {photos.length > 1 ? <span className="kd-ov__count" aria-hidden="true">{idx + 1} / {photos.length}</span> : null}
           {photos.length > 1 ? (
             <div className="kd-ov__thumbs">
               {photos.map((p, i) => (
-                <button key={p.id} type="button" aria-current={i === idx} aria-label={`Show photo ${i + 1}`} onClick={() => goTo(i)}><img src={p.src} alt="" /></button>
+                <button key={p.id} type="button" aria-current={i === idx} aria-label={`Show photo ${i + 1}`} onClick={() => goTo(i)}><Img src={p.src} alt="" /></button>
               ))}
             </div>
           ) : null}

@@ -19,9 +19,13 @@ export function StoreProvider({ children, repo }: { children: ReactNode; repo?: 
   const toast = useToast();
   const warned = useRef(false);
 
+  const unsaved = useRef<AppState | null>(null);
+
   // Persist, debounced: the editors autosave on every keystroke.
   useEffect(() => {
+    unsaved.current = state;
     const id = window.setTimeout(() => {
+      unsaved.current = null;
       const res = repoRef.current.save(state);
       if (!res.ok && !warned.current) {
         warned.current = true;
@@ -33,6 +37,23 @@ export function StoreProvider({ children, repo }: { children: ReactNode; repo?: 
     }, 250);
     return () => window.clearTimeout(id);
   }, [state, toast]);
+
+  // Leaving inside the debounce window (closing the tab, a reload, a phone killing
+  // a backgrounded tab) must not lose the last change: write it out right away.
+  useEffect(() => {
+    const flush = () => {
+      if (!unsaved.current) return;
+      repoRef.current.save(unsaved.current);
+      unsaved.current = null;
+    };
+    const onHidden = () => { if (document.visibilityState === 'hidden') flush(); };
+    window.addEventListener('pagehide', flush);
+    document.addEventListener('visibilitychange', onHidden);
+    return () => {
+      window.removeEventListener('pagehide', flush);
+      document.removeEventListener('visibilitychange', onHidden);
+    };
+  }, []);
 
   const value = useMemo(() => ({ state, dispatch, repo: repoRef.current }), [state]);
   return <StoreCtx.Provider value={value}>{children}</StoreCtx.Provider>;
