@@ -1,0 +1,422 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1792608432.1635244,
+    "seen": 1792608445.0581455,
+    "ast_hash": "2b7edee11a1575ba74bd5f1f1ed3bc98",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1792607845.601821,
+    "seen": 1792608445.0581455,
+    "ast_hash": "00187f1fbb0a5b86203bdae1341de521",
+    "semantic_hash": ""
+  },
+  "src/App.tsx": {
+    "mtime": 1792607859.3250606,
+    "seen": 1792608445.0581455,
+    "ast_hash": "ad2b48d20eb2cc7a0900ad68e97af8b3",
+    "semantic_hash": ""
+  },
+  "src/Start.tsx": {
+    "mtime": 1792607859.7941358,
+    "seen": 1792608445.0581455,
+    "ast_hash": "e0fd7104ef8fc402a1b78e6a6a14b4b1",
+    "semantic_hash": ""
+  },
+  "src/app.test.tsx": {
+    "mtime": 1792607860.262053,
+    "seen": 1792608445.0581455,
+    "ast_hash": "570d256c51e97be148a8500c53516174",
+    "semantic_hash": ""
+  },
+  "src/dashboard/Dashboard.tsx": {
+    "mtime": 1792607860.7337418,
+    "seen": 1792608445.0581455,
+    "ast_hash": "95d1d1be1f4933c17df0e63b8ec429b6",
+    "semantic_hash": ""
+  },
+  "src/dashboard/Editor.tsx": {
+    "mtime": 1792607861.2404923,
+    "seen": 1792608445.0581455,
+    "ast_hash": "06dd52a56e9bbec7b6081cf55022a06f",
+    "semantic_hash": ""
+  },
+  "src/dashboard/blank.ts": {
+    "mtime": 1792607861.6779046,
+    "seen": 1792608445.0581455,
+    "ast_hash": "d9cf041beee7a8f9b1e335a44f4216d5",
+    "semantic_hash": ""
+  },
+  "src/dashboard/parts.tsx": {
+    "mtime": 1792632859.9321954,
+    "seen": 1792633413.1656885,
+    "ast_hash": "38de5ba742e65a748e7cc15611e3f85e",
+    "semantic_hash": ""
+  },
+  "src/data/repository.test.ts": {
+    "mtime": 1792607862.6387475,
+    "seen": 1792608445.0581455,
+    "ast_hash": "665f1088802a7e7f6859013f70678ef8",
+    "semantic_hash": ""
+  },
+  "src/data/repository.ts": {
+    "mtime": 1792607863.1001859,
+    "seen": 1792608445.0581455,
+    "ast_hash": "ba57064eddf23a4facfc0a956666e2ff",
+    "semantic_hash": ""
+  },
+  "src/data/seed.ts": {
+    "mtime": 1792607864.455833,
+    "seen": 1792608445.0581455,
+    "ast_hash": "190d7abbfc96955c28aa12084378c8b0",
+    "semantic_hash": ""
+  },
+  "src/domain/animals.test.ts": {
+    "mtime": 1792607864.912644,
+    "seen": 1792608445.0581455,
+    "ast_hash": "c8adda67a8b4653a04502b9ffbdbb1f5",
+    "semantic_hash": ""
+  },
+  "src/domain/animals.ts": {
+    "mtime": 1792607865.411535,
+    "seen": 1792608445.0581455,
+    "ast_hash": "86ee65eb0d6841a2398aad42cd5d9968",
+    "semantic_hash": ""
+  },
+  "src/domain/publishing.test.ts": {
+    "mtime": 1792607865.9234116,
+    "seen": 1792608445.0581455,
+    "ast_hash": "2101d1c81bb0653fe12bebbe0a720cfa",
+    "semantic_hash": ""
+  },
+  "src/domain/publishing.ts": {
+    "mtime": 1792607866.3906796,
+    "seen": 1792608445.0581455,
+    "ast_hash": "d89ea76afa98ce759c2c5dcda42e8006",
+    "semantic_hash": ""
+  },
+  "src/domain/reducer.test.ts": {
+    "mtime": 1792607866.887357,
+    "seen": 1792608445.0581455,
+    "ast_hash": "6284e8f8e70459cb83dfd3c48d8038a1",
+    "semantic_hash": ""
+  },
+  "src/domain/reducer.ts": {
+    "mtime": 1792607867.3900793,
+    "seen": 1792608445.0581455,
+    "ast_hash": "b7dec730229cc6b88aa71bbb67280b3b",
+    "semantic_hash": ""
+  },
+  "src/domain/sections.ts": {
+    "mtime": 1792607867.8631864,
+    "seen": 1792608445.0581455,
+    "ast_hash": "afc700a9d1d3f1b2ae7a6c9d7394686c",
+    "semantic_hash": ""
+  },
+  "src/domain/types.ts": {
+    "mtime": 1792607868.316999,
+    "seen": 1792608445.0581455,
+    "ast_hash": "637e2cfea7c77432ca0a1205e2092bee",
+    "semantic_hash": ""
+  },
+  "src/lib/ids.ts": {
+    "mtime": 1792607868.859671,
+    "seen": 1792608445.0581455,
+    "ast_hash": "3f6bdc526b9dd3ba119670763a2b75e4",
+    "semantic_hash": ""
+  },
+  "src/lib/images.ts": {
+    "mtime": 1792607869.297639,
+    "seen": 1792608445.0581455,
+    "ast_hash": "4cfa7f9190d33e059038c58e2c7fa0e5",
+    "semantic_hash": ""
+  },
+  "src/main.tsx": {
+    "mtime": 1792607869.8151982,
+    "seen": 1792608445.0581455,
+    "ast_hash": "a5cccf8919613a1350dc3ee1059ad0ef",
+    "semantic_hash": ""
+  },
+  "src/public/AnimalDetail.tsx": {
+    "mtime": 1792607870.2758691,
+    "seen": 1792608445.0581455,
+    "ast_hash": "6a3bfd17f4f37a2eda043ffe2d58567f",
+    "semantic_hash": ""
+  },
+  "src/public/PublicSite.tsx": {
+    "mtime": 1792633328.1491158,
+    "seen": 1792633413.1656885,
+    "ast_hash": "565e167fe11d81fcf8c0557f693a1507",
+    "semantic_hash": ""
+  },
+  "src/public/components.tsx": {
+    "mtime": 1792633771.1582491,
+    "seen": 1792633862.2778392,
+    "ast_hash": "d1b6f5c5ec4ee11d7a8c0aa87d00a7c2",
+    "semantic_hash": ""
+  },
+  "src/public/context.ts": {
+    "mtime": 1792607871.7551892,
+    "seen": 1792608445.0581455,
+    "ast_hash": "fbb6410f3be9adc74af5254f1205a624",
+    "semantic_hash": ""
+  },
+  "src/state/store.tsx": {
+    "mtime": 1792607872.1870482,
+    "seen": 1792608445.0581455,
+    "ast_hash": "f88d706ac30f29768cda94488293c857",
+    "semantic_hash": ""
+  },
+  "src/test/setup.ts": {
+    "mtime": 1792607874.2081406,
+    "seen": 1792608445.0581455,
+    "ast_hash": "0ad0a00eb48a1809c0b5eff097a5dcec",
+    "semantic_hash": ""
+  },
+  "src/ui/Button.tsx": {
+    "mtime": 1792632859.8429039,
+    "seen": 1792633413.1656885,
+    "ast_hash": "c2006dbd06c2ae29d58d5d06794ec9c7",
+    "semantic_hash": ""
+  },
+  "src/ui/EmptyState.tsx": {
+    "mtime": 1792607875.138507,
+    "seen": 1792608445.0581455,
+    "ast_hash": "f2ade8923b08026e874a7f73bff1927f",
+    "semantic_hash": ""
+  },
+  "src/ui/Field.tsx": {
+    "mtime": 1792607875.6219788,
+    "seen": 1792608445.0581455,
+    "ast_hash": "5fe0c64d2dfd07b0f1c0f7e265449aea",
+    "semantic_hash": ""
+  },
+  "src/ui/Icon.tsx": {
+    "mtime": 1792607876.0855093,
+    "seen": 1792608445.0581455,
+    "ast_hash": "dc726c0c3927314e8e65140cbb67f7c9",
+    "semantic_hash": ""
+  },
+  "src/ui/PhotoInput.tsx": {
+    "mtime": 1792607876.5625985,
+    "seen": 1792608445.0581455,
+    "ast_hash": "79d94bbad8ba8b7de57f1771153cd4e3",
+    "semantic_hash": ""
+  },
+  "src/ui/StatusBadge.tsx": {
+    "mtime": 1792607877.0005033,
+    "seen": 1792608445.0581455,
+    "ast_hash": "5be5f84cd4c7f4f594df6d0fa42df42a",
+    "semantic_hash": ""
+  },
+  "src/ui/Toast.tsx": {
+    "mtime": 1792607877.457677,
+    "seen": 1792608445.0581455,
+    "ast_hash": "5be20ef61dfb0f0a2a99617bc21b1d61",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1792607877.9354422,
+    "seen": 1792608445.0581455,
+    "ast_hash": "0fb627c7f883d180d819b6e6b24ebe44",
+    "semantic_hash": ""
+  },
+  "vite.config.ts": {
+    "mtime": 1792607878.4394448,
+    "seen": 1792608445.0581455,
+    "ast_hash": "f29c3a7b5d5366e23ebbbb03f3704b5f",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792608432.149368,
+    "seen": 1792608445.0581455,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1792607844.1166131,
+    "seen": 1792608445.0581455,
+    "ast_hash": "858e2696ef392ef161fa37aab148aa03",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1792633586.1700816,
+    "seen": 1792633862.2778392,
+    "ast_hash": "f6324b6ee369ba59cbd69d9f38f89713",
+    "semantic_hash": ""
+  },
+  "public/photos/atlas-shepherd.webp": {
+    "mtime": 1792607846.7402174,
+    "seen": 1792608445.0581455,
+    "ast_hash": "b9b1004d30bdde77735a20bf3da4526e",
+    "semantic_hash": ""
+  },
+  "public/photos/basket-puppy.webp": {
+    "mtime": 1792607848.180336,
+    "seen": 1792608445.0581455,
+    "ast_hash": "7bde417c4bd857c3b403b9a5a3b3a24e",
+    "semantic_hash": ""
+  },
+  "public/photos/biscuit-beagle.webp": {
+    "mtime": 1792607848.8985236,
+    "seen": 1792608445.0581455,
+    "ast_hash": "0d7aacd0d6bf8684e18c48189838235f",
+    "semantic_hash": ""
+  },
+  "public/photos/bruno-pit.webp": {
+    "mtime": 1792607850.035178,
+    "seen": 1792608445.0581455,
+    "ast_hash": "0ff2ed9dc9aa3505f4d7e32aa1ce3ff2",
+    "semantic_hash": ""
+  },
+  "public/photos/collie-pup.webp": {
+    "mtime": 1792607850.722254,
+    "seen": 1792608445.0581455,
+    "ast_hash": "d1d9879b62cd60982e13b720f469243f",
+    "semantic_hash": ""
+  },
+  "public/photos/husky-grey.webp": {
+    "mtime": 1792607851.6514173,
+    "seen": 1792608445.0581455,
+    "ast_hash": "08d18e8a9c920064785ad27a4065936a",
+    "semantic_hash": ""
+  },
+  "public/photos/kiko-shiba.webp": {
+    "mtime": 1792607852.3183942,
+    "seen": 1792608445.0581455,
+    "ast_hash": "af75c7102a27773ce4c3fe4db07792dd",
+    "semantic_hash": ""
+  },
+  "public/photos/koda-husky.webp": {
+    "mtime": 1792607852.8273866,
+    "seen": 1792608445.0581455,
+    "ast_hash": "7f9181ba4fb58de1111e45a71a77f9d5",
+    "semantic_hash": ""
+  },
+  "public/photos/mango-mix.webp": {
+    "mtime": 1792607853.7412138,
+    "seen": 1792608445.0581455,
+    "ast_hash": "69667a80c0ec214ccf4ce0ec121cfcc4",
+    "semantic_hash": ""
+  },
+  "public/photos/nimbus-terrier.webp": {
+    "mtime": 1792607854.4625633,
+    "seen": 1792608445.0581455,
+    "ast_hash": "937481ca5fa3049e0784879e0f222551",
+    "semantic_hash": ""
+  },
+  "public/photos/patch-mix.webp": {
+    "mtime": 1792607855.5415604,
+    "seen": 1792608445.0581455,
+    "ast_hash": "5c02ec8df69f0d5f053872b220886c67",
+    "semantic_hash": ""
+  },
+  "public/photos/pillow-beagle.webp": {
+    "mtime": 1792607856.66815,
+    "seen": 1792608445.0581455,
+    "ast_hash": "27d7fe6e405a3297ddb04ef1d703bf42",
+    "semantic_hash": ""
+  },
+  "public/photos/pippa-corgi.webp": {
+    "mtime": 1792607857.3449924,
+    "seen": 1792608445.0581455,
+    "ast_hash": "8675da671d77de0580f0f30a9bc8f9df",
+    "semantic_hash": ""
+  },
+  "public/photos/saffron-kitten.webp": {
+    "mtime": 1792607857.8052573,
+    "seen": 1792608445.0581455,
+    "ast_hash": "b452e2d0abb13d7ebe5b495d416b5db6",
+    "semantic_hash": ""
+  },
+  "public/photos/sample-qr.svg": {
+    "mtime": 1792607858.3254178,
+    "seen": 1792608445.0581455,
+    "ast_hash": "b7db511d71a1ea32f3b647732a73dddd",
+    "semantic_hash": ""
+  },
+  "public/photos/snow-husky-pup.webp": {
+    "mtime": 1792607858.8743732,
+    "seen": 1792608445.0581455,
+    "ast_hash": "21ffd897fdebbab3cc9c094a64eba3d2",
+    "semantic_hash": ""
+  },
+  "reference/1.png": {
+    "mtime": 1792631927.6969965,
+    "seen": 1792633413.1656885,
+    "ast_hash": "bc0fad004b6e1b3a098f30065f53c6ae",
+    "semantic_hash": ""
+  },
+  "reference/10.5.png": {
+    "mtime": 1792632330.5783167,
+    "seen": 1792633413.1656885,
+    "ast_hash": "a488de2f1b29bada2e456a5411813acb",
+    "semantic_hash": ""
+  },
+  "reference/10.png": {
+    "mtime": 1792632299.0946481,
+    "seen": 1792633413.1656885,
+    "ast_hash": "e17b59e0e0259f3938d40199f3a99486",
+    "semantic_hash": ""
+  },
+  "reference/11.5.png": {
+    "mtime": 1792632389.9964936,
+    "seen": 1792633413.1656885,
+    "ast_hash": "79b665cf94cd9ffc205db11f1396bbfe",
+    "semantic_hash": ""
+  },
+  "reference/11.png": {
+    "mtime": 1792632357.8418527,
+    "seen": 1792633413.1656885,
+    "ast_hash": "12fb49eddb82fc50e2f951fe3f604a37",
+    "semantic_hash": ""
+  },
+  "reference/2.png": {
+    "mtime": 1792631984.127863,
+    "seen": 1792633413.1656885,
+    "ast_hash": "fd516e98979c737eb71e05fb6853d2c1",
+    "semantic_hash": ""
+  },
+  "reference/3.png": {
+    "mtime": 1792632037.2716043,
+    "seen": 1792633413.1656885,
+    "ast_hash": "cbc53a212d1abe5e05f00fce68f74cb8",
+    "semantic_hash": ""
+  },
+  "reference/4.png": {
+    "mtime": 1792632090.6853263,
+    "seen": 1792633413.1656885,
+    "ast_hash": "7eff36c42b6f841cd6e9c7d4ef043e4e",
+    "semantic_hash": ""
+  },
+  "reference/5.png": {
+    "mtime": 1792632135.6995196,
+    "seen": 1792633413.1656885,
+    "ast_hash": "c6d93379f28774e6b26c69daf4bbaa64",
+    "semantic_hash": ""
+  },
+  "reference/6.png": {
+    "mtime": 1792632161.0097785,
+    "seen": 1792633413.1656885,
+    "ast_hash": "0d4888d175ebf858b81cd2dea4ad2294",
+    "semantic_hash": ""
+  },
+  "reference/7.png": {
+    "mtime": 1792632198.3643181,
+    "seen": 1792633413.1656885,
+    "ast_hash": "7f3cbfa0b3a29116f5d7773f000f4d0a",
+    "semantic_hash": ""
+  },
+  "reference/8.png": {
+    "mtime": 1792632226.6777098,
+    "seen": 1792633413.1656885,
+    "ast_hash": "a203af82d2570459313a6eb790d87187",
+    "semantic_hash": ""
+  },
+  "reference/9.png": {
+    "mtime": 1792632261.0394185,
+    "seen": 1792633413.1656885,
+    "ast_hash": "e27315fa8e5c8367a6379c38728663cf",
+    "semantic_hash": ""
+  }
+}
