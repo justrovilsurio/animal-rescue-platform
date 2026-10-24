@@ -11,5 +11,6 @@
   "9": ".scrollIntoView",
   "10": "seed.ts",
   "11": "Icon.tsx",
-  "12": "scripts"
+  "12": "dashboard.spec.ts",
+  "13": "AGENTS.md"
 }

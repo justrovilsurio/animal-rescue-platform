@@ -2,10 +2,10 @@ import { useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useStore } from '../state/store';
 import { entryStatus, validateForPublish, workingCopy, type FieldErrors } from '../domain/publishing';
-import { sectionLabel } from '../domain/sections';
+import { SUPPORT_PLATFORMS, platformLabel, sectionLabel, supportCta } from '../domain/sections';
 import type {
   AdoptionContent, Collection, ContentByCollection, DonationContent, Entry, EventContent, GuideContent, PrepareContent, PrepareIcon, RescueContent, StoryContent,
-  TeamContent, VolunteerContent, Sex,
+  SupportContent, TeamContent, VolunteerContent, Sex,
 } from '../domain/types';
 import { Icon } from '../ui/Icon';
 import { nowIso } from '../lib/ids';
@@ -207,8 +207,39 @@ const PREPARE_ICONS: { id: PrepareIcon; label: string }[] = [
   { id: 'paw', label: 'Paw' }, { id: 'wallet', label: 'Costs' }, { id: 'users', label: 'Household' },
 ];
 
+function SupportFields({ c, edit, errors }: { c: SupportContent; edit: Edit; errors: FieldErrors }) {
+  const name = platformLabel(c.platform);
+  return (
+    <section className="kd-panel">
+      <div className="kd-form">
+        <ChoiceGroup legend="Where">
+          <div className="kd-chips" role="radiogroup" aria-label="Where">
+            {SUPPORT_PLATFORMS.map((pl) => (
+              <button key={pl.id} type="button" role="radio" className="kd-chip" aria-checked={c.platform === pl.id} onClick={() => edit({ platform: pl.id } as never)}>{pl.label}</button>
+            ))}
+          </div>
+        </ChoiceGroup>
+        <TextField label="Title" value={c.title} placeholder={c.offer ? 'Become a monthly supporter' : `Follow us on ${name}`} onChange={(e) => edit({ title: e.target.value } as never)} error={errors.title} />
+        <TextArea label="Details" optional rows={4} value={c.body} onChange={(e) => edit({ body: e.target.value } as never)}
+          hint="What people get, or what you post there." />
+        <TextField label={c.platform === 'other' ? 'Link' : `Link to your ${name} page`} value={c.url} placeholder={c.platform === 'other' ? 'patreon.com/yourgroup' : `${c.platform}.com/yourgroup`}
+          inputMode="url" autoComplete="off" onChange={(e) => edit({ url: e.target.value } as never)} error={errors.url} />
+        <div className="kd-form__grid">
+          <TextField label="Price or offer" optional value={c.offer} placeholder="₱99 / month" onChange={(e) => edit({ offer: e.target.value } as never)}
+            hint="For subscriptions or memberships. Kindred never handles money." />
+          <TextField label="Button text" optional value={c.cta} placeholder={supportCta({ ...c, cta: '' })} onChange={(e) => edit({ cta: e.target.value } as never)} />
+        </div>
+        <ChoiceGroup legend="Image" optional hint="A photo or a screenshot of your page. Wide images work best.">
+          <PhotoInput single photos={c.image ? [c.image] : []} onChange={(p) => edit({ image: p[0] ?? null } as never)} label="Upload image" />
+        </ChoiceGroup>
+      </div>
+    </section>
+  );
+}
+
 function CommunityFields({ collection, c, edit, errors }: { collection: Collection; c: ContentByCollection[Collection]; edit: Edit; errors: FieldErrors }) {
   if (collection === 'team') return <TeamFields c={c as TeamContent} edit={edit} errors={errors} />;
+  if (collection === 'support') return <SupportFields c={c as SupportContent} edit={edit} errors={errors} />;
   const common = (bodyLabel: string, hint?: string) => (
     <>
       <TextField label="Title" value={(c as { title: string }).title} onChange={(e) => edit({ title: e.target.value } as never)} error={errors.title} />

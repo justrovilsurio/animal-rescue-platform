@@ -12,6 +12,7 @@ export function blankContent<C extends Collection>(collection: C): ContentByColl
     volunteer: { title: '', body: '', commitment: '' },
     donation: { title: '', body: '', goal: 0, raised: 0, account: '', qr: null },
     guides: { title: '', body: '', readTime: '' },
+    support: { platform: 'facebook', title: '', body: '', offer: '', url: '', cta: '', image: null },
   };
   return blanks[collection];
 }

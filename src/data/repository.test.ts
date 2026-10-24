@@ -39,6 +39,21 @@ describe('LocalStorageRepository', () => {
     expect(loaded.entries.prepare.every((e) => e.published === null)).toBe(true); // starters arrive as drafts, invisible to visitors
     expect(loaded.page.visible.prepare && loaded.page.visible.team).toBe(true);
     expect(loaded.entries.stories[0].published).toMatchObject({ adopter: '', animal: '' });
+    expect(loaded.entries.support).toEqual([]);
+  });
+
+  it('migrates version 2 data forward with an empty "Ways to support us"', () => {
+    const v3 = reducer(seedState(), { type: 'page/update', patch: { name: 'Paws of Pasig' } });
+    const { support: _s, ...v2Entries } = v3.entries;
+    const { support: _vs, ...v2Visible } = v3.page.visible;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...v3, version: 2, page: { ...v3.page, visible: v2Visible }, entries: v2Entries }));
+
+    const loaded = new LocalStorageRepository(localStorage).load();
+    expect(loaded.version).toBe(SEED_VERSION);
+    expect(loaded.page.name).toBe('Paws of Pasig');
+    expect(loaded.entries.team).toEqual(v3.entries.team); // v2 work is untouched
+    expect(loaded.entries.support).toEqual([]);
+    expect(loaded.page.visible.support).toBe(true);
   });
 
   it('reports a full storage quota instead of throwing', () => {

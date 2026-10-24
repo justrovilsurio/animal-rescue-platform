@@ -58,6 +58,14 @@ export interface EventContent { title: string; body: string; date: string; time:
 export interface VolunteerContent { title: string; body: string; commitment: string }
 export interface DonationContent { title: string; body: string; goal: number; raised: number; account: string; qr: Photo | null }
 export interface GuideContent { title: string; body: string; readTime: string }
+/** Where a "Ways to support us" card points. 'other' covers Patreon, Ko-fi, a shop, anything with a link. */
+export type SupportPlatform = 'facebook' | 'instagram' | 'tiktok' | 'youtube' | 'x' | 'other';
+/**
+ * One of the group's social pages in "Ways to support us". `offer` is free text so it fits any
+ * platform's paid feature ("₱99 / month" for a Facebook subscription, "Members from ₱50" …).
+ * Kindred only links out; it never takes the payment.
+ */
+export interface SupportContent { platform: SupportPlatform; title: string; body: string; offer: string; url: string; cta: string; image: Photo | null }
 
 export interface ContentByCollection {
   rescues: RescueContent;
@@ -69,6 +77,7 @@ export interface ContentByCollection {
   volunteer: VolunteerContent;
   donation: DonationContent;
   guides: GuideContent;
+  support: SupportContent;
 }
 
 export type Collection = keyof ContentByCollection;

@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import type { AgeInput, EntryStatus, GroupTheme } from '../domain/types';
 import { AGE_BANDS, COMMON_SPECIES, ageBandOf } from '../domain/animals';
 import { Button, ButtonLink } from '../ui/Button';
@@ -38,8 +39,10 @@ export function PublishBar({ status, message, onPublish, onDiscard, onDelete, on
 }
 
 /* ---------- Section visibility switch ---------- */
-export function SectionToggle({ id, position, label, checked, onChange, publishedCount, draftCount }: {
+export function SectionToggle({ id, position, label, checked, onChange, publishedCount, draftCount, listTo }: {
   id: string; position: number; label: string; checked: boolean; onChange: (v: boolean) => void; publishedCount: number; draftCount: number;
+  /** Where this section's entries are edited, so an empty section is one click from its first entry. */
+  listTo: string;
 }) {
   const empty = checked && publishedCount === 0;
   const labelId = `tg-${id}`;
@@ -47,9 +50,9 @@ export function SectionToggle({ id, position, label, checked, onChange, publishe
     <div className="kd-toggle">
       <span className="kd-toggle__pos" aria-hidden="true">{position}</span>
       <div className="kd-toggle__text">
-        <p className="kd-toggle__label" id={labelId}>{label}</p>
+        <p className="kd-toggle__label" id={labelId}><Link className="kd-toggle__link" to={listTo}>{label}</Link></p>
         <p className="kd-toggle__desc">
-          {empty ? <span className="kd-toggle__warn">Shown, but nothing is published yet, so visitors won’t see it.</span>
+          {empty ? <span className="kd-toggle__warn">Shown, but nothing is published yet, so visitors won’t see it. <Link to={listTo}>{draftCount ? 'Finish a draft' : 'Add one'}</Link></span>
             : checked ? `${publishedCount} published${draftCount ? ` · ${draftCount} in draft` : ''}` : 'Hidden from visitors'}
         </p>
       </div>

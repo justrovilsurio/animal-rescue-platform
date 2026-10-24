@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { NavLink, Route, Routes, useLocation, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useStore } from '../state/store';
-import { SECTION_ORDER, COMMUNITY_KEYS, sectionLabel } from '../domain/sections';
+import { SECTION_ORDER, COMMUNITY_KEYS, platformLabel, sectionLabel } from '../domain/sections';
 import { entryStatus, previewContent, sameContent } from '../domain/publishing';
 import { ageLabel } from '../domain/animals';
-import type { Collection, ContentByCollection, Entry, GroupPage } from '../domain/types';
+import type { Collection, ContentByCollection, Entry, GroupPage, SupportPlatform } from '../domain/types';
 import { newId, nowIso } from '../lib/ids';
 import { useToast } from '../ui/Toast';
 import { Icon } from '../ui/Icon';
@@ -18,7 +18,7 @@ import { Monogram } from '../public/components';
 import { SectionToggle, ThemePicker } from './parts';
 import { EditorRoute } from './Editor';
 import { blankContent } from './blank';
-import { PREPARE_STARTERS, TEAM_SAMPLES } from '../data/seed';
+import { PREPARE_STARTERS, SUPPORT_SAMPLES, TEAM_SAMPLES } from '../data/seed';
 
 const NAV = [
   { to: '/dashboard', label: 'Page', icon: 'layout', end: true },
@@ -79,7 +79,7 @@ function Screen({ title, children }: { title: string; children: React.ReactNode 
   );
 }
 
-const SAMPLES: Partial<Record<Collection, ContentByCollection[Collection][]>> = { team: TEAM_SAMPLES, prepare: PREPARE_STARTERS.slice(0, 3) };
+const SAMPLES: Partial<Record<Collection, ContentByCollection[Collection][]>> = { team: TEAM_SAMPLES, prepare: PREPARE_STARTERS.slice(0, 3), support: SUPPORT_SAMPLES };
 
 const count = (list: Entry<unknown>[], s?: 'draft' | 'pending') =>
   list.filter((e) => (s ? entryStatus(e) === s : e.published !== null)).length;
@@ -153,7 +153,8 @@ function PageTab() {
         <p className="kd-panel__sub">Show or hide each section. The order is the same on every Kindred page, so visitors always know where to look.</p>
         {SECTION_ORDER.map((s, i) => {
           const list = state.entries[s.key] as Entry<unknown>[];
-          return <SectionToggle key={s.key} id={s.key} position={i + 1} label={s.label} checked={p.visible[s.key]} onChange={(on) => toggle(s.key, on)} publishedCount={count(list)} draftCount={count(list, 'draft')} />;
+          return <SectionToggle key={s.key} id={s.key} position={i + 1} label={s.label} checked={p.visible[s.key]} onChange={(on) => toggle(s.key, on)} publishedCount={count(list)} draftCount={count(list, 'draft')}
+            listTo={`/dashboard/${s.key === 'rescues' || s.key === 'adopt' ? 'animals' : 'community'}?show=${s.key}`} />;
         })}
       </section>
 
@@ -191,7 +192,6 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
   const [params, setParams] = useSearchParams();
   const show = (groups.includes(params.get('show') as Collection) ? params.get('show') : groups[0]) as Collection;
   const list = state.entries[show] as Entry<ContentByCollection[Collection]>[];
-
   function add() {
     const id = newId(show);
     dispatch({ type: 'entry/create', collection: show, id, content: blankContent(show), now: nowIso() });
@@ -226,9 +226,10 @@ function EntriesTab({ groups }: { groups: Collection[] }) {
             const name = (c.name as string) || (c.title as string) || 'Untitled';
             const meta = show === 'adopt' ? [c.species, ageLabel((c as unknown as ContentByCollection['adopt']).age), c.location].filter(Boolean).join(' · ')
               : show === 'stories' ? [c.animal, c.adopter && `from ${c.adopter}`, c.adoptedOn, c.photos?.length ? `${c.photos.length} ${c.photos.length === 1 ? 'photo' : 'photos'}` : ''].filter(Boolean).join(' · ')
+              : show === 'support' ? [platformLabel(c.platform as SupportPlatform), c.offer].filter(Boolean).join(' · ')
               : (c.role as string) || (c.location as string) || (c.where as string) || (c.commitment as string) || (c.readTime as string) || (c.account as string) || '';
-            const thumb = c.photos?.[0]?.src ?? c.qr?.src ?? c.photo?.src;
-            const placeholder = show === 'prepare' ? (c.icon as string) : show === 'events' ? 'calendar' : show === 'donation' ? 'gift' : show === 'guides' ? 'book' : 'users';
+            const thumb = c.photos?.[0]?.src ?? c.qr?.src ?? c.photo?.src ?? (c.image as { src: string } | null | undefined)?.src;
+            const placeholder = show === 'prepare' ? (c.icon as string) : show === 'events' ? 'calendar' : show === 'donation' ? 'gift' : show === 'guides' ? 'book' : show === 'support' ? 'share' : 'users';
             return (
               <li className="kd-row" key={e.id}>
                 <Link className="kd-row__btn" to={`/dashboard/edit/${show}/${e.id}`}>

@@ -1,4 +1,4 @@
-import type { AdoptionContent, AppState, Entry, Photo, PrepareContent, TeamContent } from '../domain/types';
+import type { AdoptionContent, AppState, Entry, Photo, PrepareContent, SupportContent, TeamContent } from '../domain/types';
 
 /**
  * Demo content so every screen renders at real density.
@@ -17,7 +17,15 @@ function pending<T>(id: string, content: T, edits: Partial<T>): Entry<T> {
   return { id, createdAt: T0, publishedAt: T0, published: content, draft: { ...content, ...edits } };
 }
 
-export const SEED_VERSION = 2;
+export const SEED_VERSION = 3;
+
+/** Sample "Ways to support us" cards, for the demo and the "Add sample entries" button. */
+export const SUPPORT_SAMPLES: SupportContent[] = [
+  { platform: 'facebook', title: 'Become a monthly supporter', body: 'Subscribers get first look at new rescues, a supporter badge on their comments, and a monthly photo dump from our foster homes.',
+    offer: '₱99 / month', url: 'facebook.com/secondwindrescue/subscribe', cta: '', image: p('saffron-kitten') },
+  { platform: 'instagram', title: 'Daily foster life on Instagram', body: 'Morning zoomies, vet-day faces and the animals who just found homes.', offer: '', url: 'instagram.com/secondwindrescue', cta: '', image: p('kiko-shiba') },
+  { platform: 'tiktok', title: 'Rescue stories in 60 seconds', body: 'Before-and-afters from the street to the sofa.', offer: '', url: 'tiktok.com/@secondwindrescue', cta: '', image: null },
+];
 
 /**
  * "Before you adopt" starter points. Groups that predate the section get the
@@ -52,7 +60,7 @@ export function seedState(): AppState {
       theme: 'moss',
       logo: null,
       banner: p('pippa-corgi'),
-      visible: { rescues: true, adopt: true, prepare: true, stories: true, events: true, team: true, volunteer: true, donation: true, guides: true },
+      visible: { rescues: true, adopt: true, prepare: true, stories: true, events: true, team: true, volunteer: true, donation: true, guides: true, support: true },
       publishedAt: null,
     },
     entries: {
@@ -112,6 +120,7 @@ export function seedState(): AppState {
         live('g-kitten', { title: 'Introducing a kitten to a resident cat', body: 'Scent swapping, the door-crack stage, and the signs it is going well.', readTime: '4 min read' }),
         live('g-ticks', { title: 'Tick season: what to check and when', body: 'Ears, between toes, under the collar. What the vet will ask you.', readTime: '3 min read' }),
       ],
+      support: SUPPORT_SAMPLES.map((c, i) => live(`sup-${i + 1}`, c)),
     },
   };
 }

@@ -1,4 +1,5 @@
 import type { Collection, ContentByCollection, Entry, EntryStatus } from './types';
+import { supportHref } from './sections';
 
 /** Deep-ish equality for plain JSON content. Good enough for form data. */
 export function sameContent(a: unknown, b: unknown): boolean {
@@ -68,6 +69,11 @@ export function validateForPublish<C extends Collection>(collection: C, content:
   } else if (collection === 'team') {
     const c = content as ContentByCollection['team'];
     if (!c.name.trim()) errors.name = 'Add their name. A first name is fine.';
+  } else if (collection === 'support') {
+    const c = content as ContentByCollection['support'];
+    if (!c.title.trim()) errors.title = 'Add a title.';
+    if (!c.url.trim()) errors.url = 'Add the link to your page so visitors can reach it.';
+    else if (!supportHref(c.url)) errors.url = 'That doesn’t look like a web link. Paste the full address, like facebook.com/yourpage.';
   } else {
     const c = content as { title: string };
     if (!c.title.trim()) errors.title = 'Add a title.';

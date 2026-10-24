@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import type { AdoptionContent, AdoptionFilters, GroupPage, RescueContent, StoryContent, EventContent, VolunteerContent, DonationContent, GuideContent, CommunityCollection, PrepareContent, TeamContent } from '../domain/types';
+import type { AdoptionContent, AdoptionFilters, GroupPage, RescueContent, StoryContent, EventContent, VolunteerContent, DonationContent, GuideContent, CommunityCollection, PrepareContent, SupportContent, TeamContent } from '../domain/types';
 import { AGE_FILTER_OPTIONS, EMPTY_FILTERS, factsLine } from '../domain/animals';
+import { platformLabel, supportCta, supportHref } from '../domain/sections';
 import { Icon } from '../ui/Icon';
 import { Img } from '../ui/Img';
 import { ButtonA, Button, ButtonLink } from '../ui/Button';
@@ -334,6 +335,25 @@ export function CommunityCard({ kind, item, page, status }: { kind: CommunityCol
         {v.body ? <p className="kd-cc__body">{v.body}</p> : null}
         {v.commitment ? <div className="kd-cc__meta"><span><Icon name="clock" size={16} />{v.commitment}</span></div> : null}
         {page.email ? <a className="kd-cc__link" href={mailto(page.email, `Volunteering: ${v.title}`)}>Email to sign up</a> : null}
+      </article>
+    );
+  }
+  if (kind === 'support') {
+    const s = item as SupportContent;
+    const href = supportHref(s.url);
+    return (
+      <article className="kd-cc kd-cc--support">
+        {s.image ? <div className="kd-cc__img"><Img src={s.image.src} alt="" loading="lazy" /></div> : null}
+        {badge}
+        <p className="kd-cc__platform"><Icon name="share" size={16} />{platformLabel(s.platform)}</p>
+        <h3 className="kd-cc__title">{s.title || 'Untitled'}</h3>
+        {s.body ? <p className="kd-cc__body">{s.body}</p> : null}
+        {s.offer || href ? (
+          <div className="kd-cc__cta">
+            {s.offer ? <span className="kd-cc__offer">{s.offer}</span> : null}
+            {href ? <ButtonA variant="ink" size="s" iconEnd="chevron" href={href} target="_blank" rel="noopener noreferrer">{supportCta(s)}<span className="kd-sr"> (opens {platformLabel(s.platform)} in a new tab)</span></ButtonA> : null}
+          </div>
+        ) : null}
       </article>
     );
   }

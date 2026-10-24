@@ -188,7 +188,7 @@ function CommunitySection({ kind }: { kind: (typeof COMMUNITY_KEYS)[number] }) {
   const label = SECTION_ORDER.find((s) => s.key === kind)!.label;
   const twoUp = kind === 'events' || kind === 'donation' || kind === 'stories';
   const field = { stories: 'kd-sec--field-stories', team: 'kd-sec--field-team', prepare: 'kd-sec--prepare' }[kind as string];
-  const description = { prepare: 'What to think through before you apply.', team: 'The caretakers and volunteers behind every rescue.' }[kind as string];
+  const description = { prepare: 'What to think through before you apply.', team: 'The caretakers and volunteers behind every rescue.', support: 'Follow along, or back us every month.' }[kind as string];
   const layout = kind === 'prepare' ? 'kd-prepgrid' : kind === 'team' ? 'kd-teamrail' : twoUp ? 'kd-cols kd-cols--2' : 'kd-cols';
   return (
     <section className={['kd-sec', field].filter(Boolean).join(' ')} id={`sec-${kind}`} aria-labelledby={`h-${kind}`}>

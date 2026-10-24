@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kindred CSS Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Caladea:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: the guide wears Kindred's own tokens. Sticky lesson index on the left (a chip row on phones, like .kd-jump), lessons on the right; every demo is a framed "bench" running the real rules. */
+:root {
+  --lime: #cadf42; --peri: #c0c4fe; --iris: #8d92fd; --navy: #151f30; --cloud: #f5f5f6;
+  --theme-moss: #cadf42; --theme-moss-on: #151f30; --theme-moss-2: #c0c4fe;
+  --theme-harbor: #c0c4fe; --theme-harbor-on: #151f30; --theme-harbor-2: #cadf42;
+  --theme-cocoa: #8d92fd; --theme-cocoa-on: #151f30; --theme-cocoa-2: #cadf42;
+  --theme-slate: #151f30; --theme-slate-on: #f5f5f6; --theme-slate-2: #c0c4fe;
+  --paper: #f5f5f6; --surface: #ffffff; --sunk: #ebebef; --ink: #151f30; --muted: #535a69;
+  --line: #dfe0e6; --line-strong: #858a98; --mark: #e6e7ff; --focus: #4a51d8;
+  --rescue-soft: #e6e7ff; --lime-soft: #eff5c8; --flag: #c8325a;
+  --shadow-card: 0 1px 2px rgba(21,31,48,.06), 0 10px 28px -12px rgba(21,31,48,.16);
+  --code-bg: #151f30; --code-ink: #e4e6f0; --code-c: #8790a6; --code-sel: #cadf42; --code-var: #c0c4fe; --code-num: #f2c46f; --code-str: #9fe0c2; --code-prop: #a9b8ff; --code-at: #f59fc4;
+  --display: "Anton", "Arial Narrow", sans-serif;
+  --text: "Caladea", Cambria, Georgia, serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --kd-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --kd-dur-press: 140ms; --kd-dur-ui: 200ms;
+  --kd-g: var(--theme-moss); --kd-g-on: var(--theme-moss-on); --kd-g2: var(--theme-moss-2);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1624; --surface: #182234; --sunk: #0a101b; --ink: #f5f5f6; --muted: #a8afbe;
+    --line: #27324a; --line-strong: #707a90; --mark: #222a4d; --focus: #a9aeff;
+    --rescue-soft: #1a2140; --lime-soft: #232a14; --flag: #ff7a9c;
+    --shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -12px rgba(0,0,0,.5);
+    --code-bg: #0a101b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1624; --surface: #182234; --sunk: #0a101b; --ink: #f5f5f6; --muted: #a8afbe;
+  --line: #27324a; --line-strong: #707a90; --mark: #222a4d; --focus: #a9aeff;
+  --rescue-soft: #1a2140; --lime-soft: #232a14; --flag: #ff7a9c;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -12px rgba(0,0,0,.5);
+  --code-bg: #0a101b; color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--text); font-size: 18px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+::selection { background: var(--lime); color: var(--navy); }
+p { margin: 0 0 14px; }
+code { font-family: var(--mono); font-size: .8em; background: var(--sunk); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+a { color: inherit; text-underline-offset: 4px; }
+svg.paw { width: 1em; height: 1em; fill: currentColor; flex: none; }
+
+/* ---------- page shell ---------- */
+.mast { max-width: 1200px; margin: 0 auto; padding-block: 40px 8px; }
+.mast__eyebrow, .eyebrow { font-family: var(--mono); font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.mast h1 { font-family: var(--display); font-weight: 400; font-size: clamp(52px, 10vw, 120px); line-height: .94; margin: 12px 0 18px; text-wrap: balance; letter-spacing: -.005em; }
+.mast h1 em { font-style: normal; background: var(--lime); color: var(--navy); padding: 0 .12em; border-radius: .12em; }
+.mast__lede { font-size: 21px; line-height: 1.5; max-width: 54ch; text-wrap: pretty; }
+.progress { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 22px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.progress__bar { width: 220px; max-width: 100%; height: 10px; border-radius: 999px; background: var(--sunk); overflow: hidden; }
+.progress__bar span { display: block; height: 100%; width: 0; background: var(--lime); border-radius: inherit; transition: width 400ms var(--kd-ease-out); }
+
+.shell { max-width: 1200px; margin: 0 auto; display: grid; gap: 8px; padding-block: 8px 72px; }
+.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; background: var(--paper); display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+.toc::-webkit-scrollbar { display: none; }
+.toc__part { display: none; }
+.toc a {
+  flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 0 14px; border-radius: 999px;
+  font-size: 15.5px; text-decoration: none; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  transition: background-color var(--kd-dur-ui) ease, box-shadow var(--kd-dur-ui) ease;
+}
+.toc a .n { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.toc a.is-done .n { color: transparent; width: 12px; height: 12px; border-radius: 50%; background: var(--lime); font-size: 0; display: inline-block; }
+.toc a[aria-current="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+.toc a[aria-current="true"] .n { color: var(--paper); opacity: .7; }
+@media (min-width: 1000px) {
+  .shell { grid-template-columns: 220px minmax(0, 1fr); gap: 56px; }
+  .toc { display: block; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; max-height: calc(100vh - 40px); overflow-y: auto; padding: 24px 0; background: none; }
+  .toc__part { display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 18px 0 6px; }
+  .toc__part:first-child { margin-top: 0; }
+  .toc a { display: flex; min-height: 34px; padding: 0 12px; margin: 2px 0; box-shadow: none; font-size: 16px; }
+  .toc a .n { width: 18px; }
+}
+@media (hover: hover) and (pointer: fine) { .toc a:not([aria-current="true"]):hover { background: var(--sunk); } }
+
+/* ---------- lesson ---------- */
+.lesson { padding-block: 44px; border-top: 1.5px solid var(--line); scroll-margin-top: 64px; min-width: 0; }
+.lesson:first-child { border-top: 0; padding-top: 16px; }
+.lesson h2 { font-family: var(--display); font-weight: 400; font-size: clamp(40px, 6.2vw, 68px); line-height: 1; margin: 8px 0 18px; text-wrap: balance; }
+.prose { max-width: 66ch; }
+.prose ul { padding-left: 20px; margin: 0 0 14px; }
+.prose li { margin-bottom: 6px; }
+.prose strong { font-weight: 700; }
+.terms { display: grid; gap: 10px; margin: 0 0 16px; padding: 0; list-style: none; max-width: 66ch; }
+.terms li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.terms b { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+
+table.bp { border-collapse: collapse; font-size: 16px; min-width: 460px; }
+table.bp th, table.bp td { text-align: left; padding: 8px 14px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.bp th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 400; }
+table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.scrollx { overflow-x: auto; margin: 0 0 16px; }
+
+/* ---------- demo bench ---------- */
+.demo { margin: 28px 0; border-radius: 24px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); overflow: hidden; }
+.demo__bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding: 14px 18px; border-bottom: 1.5px solid var(--line); }
+.demo__tag { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; background: var(--lime); color: var(--navy); padding: 3px 10px; border-radius: 999px; }
+.demo__hint { font-size: 15.5px; color: var(--muted); margin: 0; flex: 1 1 260px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 14px 18px; border-bottom: 1.5px solid var(--line); background: var(--surface); }
+.controls label { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; }
+.controls input[type="range"] { width: 160px; accent-color: var(--iris); }
+.controls input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--iris); margin: 0; }
+.controls input[type="color"] { width: 40px; height: 32px; padding: 0; border: 1.5px solid var(--line-strong); border-radius: 8px; background: none; cursor: pointer; }
+.val { font-variant-numeric: tabular-nums; min-width: 4ch; display: inline-block; }
+.ctl {
+  appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 15px; min-height: 36px; padding: 0 16px; border-radius: 999px;
+  background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px currentColor; transition: transform var(--kd-dur-press) var(--kd-ease-out), background-color var(--kd-dur-ui) ease;
+}
+.ctl:active { transform: scale(.96); }
+.seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--sunk); gap: 2px; flex-wrap: wrap; }
+.seg button { appearance: none; border: 0; cursor: pointer; font-family: var(--mono); font-size: 13px; min-height: 32px; padding: 0 14px; border-radius: 999px; background: transparent; color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+@media (hover: hover) and (pointer: fine) { .ctl:hover { background: color-mix(in oklab, currentColor 8%, transparent); } .seg button[aria-pressed="false"]:hover { background: color-mix(in oklab, var(--ink) 8%, transparent); } }
+.stage { padding: 20px; background: var(--paper); min-width: 0; }
+.readout { margin: 0; font-family: var(--mono); font-size: 13px; line-height: 1.65; padding: 14px 18px; border-top: 1.5px solid var(--line); overflow-x: auto; white-space: pre; color: var(--ink); background: var(--surface); }
+.readout b { font-weight: 600; background: var(--mark); padding: 0 4px; border-radius: 4px; }
+
+/* ---------- code ---------- */
+.code { margin: 22px 0; border-radius: 18px; background: var(--code-bg); color: var(--code-ink); overflow: hidden; }
+.code__file { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--mono); font-size: 12px; padding: 10px 16px; color: var(--code-c); border-bottom: 1px solid rgba(255,255,255,.08); }
+.code pre { margin: 0; padding: 16px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.65; tab-size: 2; }
+.code code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+.t-c { color: var(--code-c); font-style: italic; } .t-at { color: var(--code-at); } .t-sel { color: var(--code-sel); }
+.t-var { color: var(--code-var); } .t-str { color: var(--code-str); } .t-num { color: var(--code-num); } .t-prop { color: var(--code-prop); }
+
+/* ---------- quiz + done ---------- */
+.quiz { margin-top: 22px; border-radius: 18px; background: var(--mark); max-width: 76ch; }
+.quiz summary { cursor: pointer; list-style: none; display: flex; gap: 14px; align-items: baseline; padding: 16px 20px; }
+.quiz summary::-webkit-details-marker { display: none; }
+.quiz__label { flex: none; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; background: var(--ink); color: var(--paper); padding: 2px 9px; border-radius: 999px; }
+.quiz__q { font-weight: 700; }
+.quiz__a { padding: 0 20px 18px 20px; }
+.quiz__a::before { content: "Answer"; display: block; font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.quiz[open] summary .quiz__label { background: var(--lime); color: var(--navy); }
+.done { display: inline-flex; align-items: center; gap: 10px; margin-top: 18px; font-size: 16px; cursor: pointer; padding: 8px 16px 8px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+.done input { width: 18px; height: 18px; accent-color: var(--iris); margin: 0; }
+.done:has(input:checked) { background: var(--lime); color: var(--navy); box-shadow: none; }
+
+/* =====================================================================
+   Kindred replicas. Same rules as src/styles/kindred.css, scoped to demos.
+   ===================================================================== */
+[data-gtheme="moss"] { --kd-g: var(--theme-moss); --kd-g-on: var(--theme-moss-on); --kd-g2: var(--theme-moss-2); }
+[data-gtheme="harbor"] { --kd-g: var(--theme-harbor); --kd-g-on: var(--theme-harbor-on); --kd-g2: var(--theme-harbor-2); }
+[data-gtheme="cocoa"] { --kd-g: var(--theme-cocoa); --kd-g-on: var(--theme-cocoa-on); --kd-g2: var(--theme-cocoa-2); }
+[data-gtheme="slate"] { --kd-g: var(--theme-slate); --kd-g-on: var(--theme-slate-on); --kd-g2: var(--theme-slate-2); }
+
+.kd-btn {
+  appearance: none; border: 0; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 0 22px; border-radius: 999px;
+  font-family: var(--text); font-size: 16px; line-height: 20px; white-space: nowrap; -webkit-tap-highlight-color: transparent;
+  transition: transform var(--kd-dur-press) var(--kd-ease-out), background-color var(--kd-dur-ui) ease, color var(--kd-dur-ui) ease, box-shadow var(--kd-dur-ui) ease;
+}
+.kd-btn:active { transform: scale(0.97); }
+.kd-btn--primary { background: var(--navy); color: #fff; }
+.kd-btn--group { background: var(--kd-g); color: var(--kd-g-on); }
+.kd-btn--accent { background: var(--peri); color: var(--navy); }
+.kd-btn--lime { background: var(--lime); color: var(--navy); }
+.kd-btn--ink { background: var(--navy); color: var(--cloud); }
+.kd-btn--secondary { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px currentColor; }
+.kd-btn--ghost { background: transparent; color: var(--ink); padding: 0 14px; }
+/* demo stand-in for @media (hover: hover) and (pointer: fine): the .can-hover class */
+.can-hover .kd-btn--primary:hover { background: #2a3550; }
+.can-hover .kd-btn--group:hover { background: color-mix(in oklab, var(--kd-g) var(--mix, 86%), var(--kd-g-on)); }
+.can-hover .kd-btn--accent:hover { background: color-mix(in oklab, var(--peri) 84%, var(--navy)); }
+.can-hover .kd-btn--lime:hover { background: color-mix(in oklab, var(--lime) var(--mix, 86%), var(--navy)); }
+.can-hover .kd-btn--ink:hover { background: color-mix(in oklab, var(--navy) 82%, var(--cloud)); }
+.can-hover .kd-btn--secondary:hover, .can-hover .kd-btn--ghost:hover { background: color-mix(in oklab, currentColor 7%, transparent); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* L1 tokens */
+.m-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.m-stat { border-radius: 26px; padding: 18px 22px; min-height: 124px; display: grid; align-content: center; gap: 2px; }
+.m-stat b { font-family: var(--display); font-weight: 400; font-size: 58px; line-height: .95; }
+.m-stat span { font-size: 16px; line-height: 22px; }
+.m-stat--lime { background: var(--lime); color: var(--navy); }
+.m-stat--navy { background: var(--navy); color: var(--cloud); }
+.m-stat--peri { background: var(--peri); color: var(--navy); }
+
+/* L2 themes */
+.th-top { display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 8px 16px; border-radius: 18px; background: var(--kd-g); color: var(--kd-g-on); transition: background-color 300ms ease, color 300ms ease; }
+.th-mono { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--kd-g-on); color: var(--kd-g); font-family: var(--display); font-size: 14px; flex: none; transition: inherit; }
+.th-top .th-end { margin-left: auto; }
+.th-top .kd-btn { min-height: 38px; padding: 0 16px; font-size: 15px; background: var(--kd-g-on); color: var(--kd-g); }
+.th-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 22px 6px 6px; }
+.th-name { font-family: var(--display); font-size: clamp(34px, 6vw, 56px); line-height: .95; margin: 0 0 14px; }
+.th-art { width: clamp(110px, 24vw, 170px); aspect-ratio: 1; position: relative; }
+.th-art svg { width: 100%; height: 100%; overflow: visible; }
+.th-back { fill: var(--kd-g2); transform-box: fill-box; transform-origin: 50% 52%; transform: translate(8px, 6px) rotate(-11deg) scale(1.03); transition: fill 300ms ease; }
+.th-fill { fill: var(--kd-g); transition: fill 300ms ease; }
+.th-paw { fill: var(--kd-g-on); transition: fill 300ms ease; }
+
+/* L3 BEM */
+.bem-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 220px)); gap: 16px; justify-content: center; }
+.kd-card { position: relative; display: block; border-radius: 32px; color: inherit; }
+.kd-card--adoption { background: var(--surface); box-shadow: var(--shadow-card); overflow: hidden; display: flex; flex-direction: column; }
+.kd-card__media { position: relative; overflow: hidden; }
+.kd-card--adoption .kd-card__media { margin: 10px 10px 0; border-radius: 24px; aspect-ratio: 1 / 1; background: var(--lime); padding: 10px; }
+.kd-card--adoption:nth-child(even) .kd-card__media { background: var(--peri); }
+.kd-card__photo { width: 100%; height: 100%; border-radius: 16px; display: grid; place-items: center; font-size: 46px; color: rgba(255,255,255,.75); }
+.kd-card__badge { position: absolute; top: 18px; left: 18px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px 0 8px; border-radius: 999px; font-size: 13px; font-weight: 700; background: #e4efa6; color: #3d4b05; }
+.kd-card__badge i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.kd-card__body { padding: 12px 14px 16px; display: grid; justify-items: center; text-align: center; gap: 2px; }
+.kd-card__name { font-family: var(--display); font-weight: 400; font-size: 28px; line-height: 34px; margin: 0; }
+.kd-card__facts { font-size: 15px; line-height: 21px; margin: 0; }
+.kd-card__where { display: flex; align-items: center; gap: 4px; font-size: 14px; line-height: 20px; color: var(--muted); margin: 0; }
+.kd-card__cta { margin-top: 10px; display: inline-flex; align-items: center; min-height: 38px; padding: 0 18px; border-radius: 999px; background: var(--lime); color: var(--navy); font-size: 15px; }
+.kd-card--adoption:nth-child(even) .kd-card__cta { background: var(--peri); }
+.is-lit { outline: 3px solid var(--flag) !important; outline-offset: 2px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { appearance: none; border: 0; cursor: pointer; font-family: var(--mono); font-size: 12.5px; min-height: 32px; padding: 0 12px; border-radius: 999px; color: var(--navy); }
+.chip--b { background: var(--navy); color: var(--cloud); }
+.chip--e { background: var(--peri); }
+.chip--m { background: var(--lime); }
+.chip--p { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+.chip[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--flag); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; color: var(--muted); margin-top: 10px; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.legend .lb::before { background: var(--navy); } .legend .le::before { background: var(--peri); } .legend .lm::before { background: var(--lime); }
+
+/* L4 sections */
+.sx-box { position: relative; height: 380px; overflow: auto; border-radius: 16px; background: var(--paper); overscroll-behavior: contain; box-shadow: inset 0 0 0 1.5px var(--line); }
+.sx-bar { position: sticky; top: 0; z-index: 3; height: 54px; display: flex; align-items: center; gap: 10px; padding: 0 16px; background: var(--theme-moss); color: var(--navy); font-family: var(--display); font-size: 18px; }
+.sx-bar .th-mono { background: var(--navy); color: var(--lime); }
+.sx-sec { padding: 28px 0; position: relative; }
+.sx-box.has-margin .sx-sec { scroll-margin-top: 66px; }
+.f-rescue { background: var(--rescue-soft); } .f-adopt { background: var(--paper); } .f-stories { background: var(--lime-soft); }
+.sx-wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; position: relative; }
+.sx-sec h4 { font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1.1; margin: 0 0 14px; }
+.sx-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.sx-row span { aspect-ratio: 4 / 5; border-radius: 14px; background: var(--peri); }
+.sx-row span:nth-child(2) { background: var(--lime); }
+.f-stories .sx-row span { aspect-ratio: 3 / 2; }
+.layers .sx-sec { outline: 2px dashed var(--flag); outline-offset: -2px; }
+.layers .sx-sec::after { content: attr(data-cls); position: absolute; top: 6px; right: 8px; font: 11.5px/1.4 var(--mono); background: var(--flag); color: #fff; padding: 1px 6px; border-radius: 6px; }
+.layers .sx-wrap { outline: 2px dashed var(--iris); outline-offset: 4px; }
+.layers .sx-wrap::before { content: ".kd-wrap"; position: absolute; left: 16px; top: -24px; font: 11.5px/1.4 var(--mono); background: var(--iris); color: var(--navy); padding: 1px 6px; border-radius: 6px; }
+
+/* L5 minmax */
+.mm-frame { width: min(100%, 440px); margin: 8px auto; outline: 2px dashed var(--line-strong); outline-offset: 8px; border-radius: 2px; }
+.mm-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.mm-grid.is-plain { grid-template-columns: repeat(2, 1fr); }
+.mm-card { background: var(--surface); border-radius: 22px; box-shadow: var(--shadow-card); padding: 10px 10px 14px; }
+.mm-card i { display: block; aspect-ratio: 1; border-radius: 14px; background: var(--lime); }
+.mm-card:nth-child(2) i { background: var(--peri); }
+.mm-name { font-family: var(--display); font-size: 24px; line-height: 30px; margin: 8px 4px 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-scroll { overflow-x: auto; padding: 12px 4px; }
+
+/* L6 + L7 container stage */
+.cq-scroll { overflow-x: auto; padding: 4px 0 8px; }
+.cq-box { container-type: inline-size; margin: 0 auto; background: var(--paper); box-shadow: 0 0 0 2px var(--iris); border-radius: 4px; max-width: none; }
+.k-wrap { max-width: 1240px; margin: 0 auto; padding: 16px; }
+.k-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+.k-card { display: grid; gap: 6px; min-width: 0; }
+.k-card i { display: block; aspect-ratio: 1; border-radius: 16px; background: var(--lime); }
+.k-card:nth-child(even) i { background: var(--peri); }
+.k-card span { font-family: var(--display); font-size: 20px; line-height: 24px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.k-rail { display: grid; grid-auto-flow: column; grid-auto-columns: 72%; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 16px 4px; margin: 0 -16px; scrollbar-width: none; overscroll-behavior-x: contain; }
+.k-rail::-webkit-scrollbar { display: none; }
+.k-rail > * { scroll-snap-align: start; scroll-margin-left: 16px; }
+.no-snap .k-rail { scroll-snap-type: none; }
+@container (min-width: 720px) {
+  .k-wrap { padding: 16px 40px; }
+  .k-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 20px; }
+  .k-rail { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(var(--n, 4), minmax(0, var(--max, 1fr))); overflow: visible; margin: 0; padding: 0; gap: 20px; }
+}
+@container (min-width: 1040px) { .k-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.show-bleed .k-wrap { box-shadow: inset 16px 0 0 color-mix(in oklab, var(--iris) 30%, transparent), inset -16px 0 0 color-mix(in oklab, var(--iris) 30%, transparent); }
+.show-bleed .k-rail { outline: 2px dashed var(--flag); outline-offset: -2px; }
+.r-card { position: relative; aspect-ratio: 4 / 5; border-radius: 24px; overflow: hidden; color: #fff; }
+.r-card__over { position: absolute; inset: auto 0 0 0; padding: 48px 16px 14px; background: linear-gradient(180deg, transparent, rgba(21,31,48,.82)); }
+.r-card__name { font-family: var(--display); font-size: 26px; line-height: 30px; margin: 0; }
+.r-card__meta { font-size: 14px; line-height: 19px; margin: 2px 0 0; opacity: .92; }
+.ruler { position: relative; height: 34px; margin: 6px 0 2px; }
+.ruler__track { position: absolute; left: 0; right: 0; top: 14px; height: 6px; border-radius: 999px; background: var(--sunk); }
+.ruler__tick { position: absolute; top: -12px; transform: translateX(-50%); font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.ruler__tick::after { content: ""; position: absolute; left: 50%; top: 14px; width: 2px; height: 14px; background: var(--line-strong); }
+.ruler__now { position: absolute; top: -5px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--iris); box-shadow: 0 0 0 3px var(--surface); }
+.rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-family: var(--mono); font-size: 13px; }
+.rules li { padding: 6px 10px; border-radius: 10px; background: var(--sunk); color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.rules li.on { background: var(--lime); color: var(--navy); }
+.rules li .st::before { content: "off"; }
+.rules li.on .st::before { content: "active"; }
+.split { display: grid; gap: 14px; padding: 14px 18px; border-top: 1.5px solid var(--line); background: var(--surface); }
+
+/* L8 buttons */
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin-top: 18px; }
+.sw { display: grid; gap: 6px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.sw i { display: block; width: 92px; height: 56px; border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.sw--mix i { background: color-mix(in oklab, var(--lime) var(--mix, 86%), var(--navy)); }
+.sw-op { align-self: center; font-family: var(--mono); color: var(--muted); padding-bottom: 18px; }
+
+/* L9 reveal: real selectors */
+.rv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+.rv-item { border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-card); padding: 10px 10px 8px; text-align: center; }
+.rv-item i { display: block; aspect-ratio: 1; border-radius: 12px; background: var(--lime); margin-bottom: 6px; }
+.rv-item:nth-child(even) i { background: var(--peri); }
+.rv-item code { font-size: 12px; background: none; }
+[data-reveal] > :nth-child(2) { --i: 1; }
+[data-reveal] > :nth-child(3) { --i: 2; }
+[data-reveal] > :nth-child(4) { --i: 3; }
+[data-reveal] > :nth-child(5) { --i: 4; }
+[data-reveal] > :nth-child(6) { --i: 5; }
+[data-reveal] > :nth-child(7) { --i: 6; }
+[data-reveal] > :nth-child(n+8) { --i: 7; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal="stagger"]:not([data-shown]) > *, [data-reveal="drop"]:not([data-shown]) > * { opacity: 0; }
+  [data-reveal="stagger"][data-shown] > * { animation: kd-in 760ms var(--kd-ease-out) backwards; animation-delay: calc(var(--i, 0) * var(--step, 80ms)); }
+  [data-reveal="drop"][data-shown] > * { animation: kd-drop 720ms var(--drop-ease, cubic-bezier(0.34, 1.56, 0.64, 1)) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
+  .sim-reduced [data-reveal] > * { animation: none !important; opacity: 1 !important; }
+}
+@keyframes kd-in { from { opacity: 0; transform: translateY(32px); } }
+@keyframes kd-drop { from { opacity: 0; transform: translateY(-72px) rotate(calc(var(--r, 0deg) - 16deg)); } }
+
+/* L10 pile */
+.k-tags { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 0; padding: 36px 8px 8px; }
+.k-tags > span {
+  display: inline-flex; align-items: center; min-height: 50px; padding: 0 28px; margin-right: -6px; border-radius: 999px;
+  background: var(--paper); color: var(--ink); box-shadow: inset 0 0 0 2px currentColor; font-size: 20px; cursor: default;
+  transform: rotate(var(--r, 0deg)); transition: transform 320ms var(--kd-ease-out), background-color var(--kd-dur-ui) ease;
+}
+.k-tags > span:nth-child(5n+1) { --r: -9deg; background: var(--peri); color: var(--navy); }
+.k-tags > span:nth-child(5n+2) { --r: 5deg; }
+.k-tags > span:nth-child(5n+3) { --r: -4deg; background: var(--lime); color: var(--navy); }
+.k-tags > span:nth-child(5n+4) { --r: 8deg; }
+.k-tags > span:nth-child(5n) { --r: -2deg; }
+@media (hover: hover) and (pointer: fine) { .k-tags > span:hover { transform: rotate(0deg) translateY(-4px); } }
+
+/* L11 marquee */
+.k-bands { position: relative; overflow: clip; padding: 40px 0 32px; }
+.k-band { position: relative; width: 112%; margin-left: -6%; overflow: hidden; padding: 12px 0; }
+.k-band--a { background: var(--lime); color: var(--navy); transform: rotate(calc(var(--tilt, -2.6) * 1deg)); }
+.k-band--b { background: var(--peri); color: var(--navy); transform: rotate(calc(var(--tilt, -2.6) * -0.77deg)); margin-top: -4px; }
+.k-track { display: flex; width: max-content; }
+.k-track > div { display: flex; align-items: center; gap: 22px; padding-right: 22px; font-size: 22px; line-height: 30px; white-space: nowrap; }
+.k-track .paw { opacity: .85; }
+@media (prefers-reduced-motion: no-preference) {
+  .k-track { animation: kd-marquee var(--dur, 60s) linear infinite; }
+  .k-band--b .k-track { animation-direction: reverse; animation-duration: calc(var(--dur, 60s) * 1.2); }
+  .k-bands:hover .k-track { animation-play-state: paused; }
+}
+@keyframes kd-marquee { to { transform: translateX(-50%); } }
+.seams .k-track > div:first-child { box-shadow: inset 0 0 0 3px var(--navy); }
+.seams .k-track > div:last-child { background: rgba(21,31,48,.14); }
+.seams .k-track > div::before { font-family: var(--mono); font-size: 12px; background: var(--navy); color: var(--lime); padding: 2px 8px; border-radius: 6px; margin-left: 10px; }
+.seams .k-track > div:first-child::before { content: "copy 1"; }
+.seams .k-track > div:last-child::before { content: "copy 2"; }
+
+/* L12 scroll-driven */
+.sd-box { position: relative; height: 340px; overflow: auto; border-radius: 16px; background: var(--paper); overscroll-behavior: contain; box-shadow: inset 0 0 0 1.5px var(--line); }
+.sd-bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 0 16px; background: var(--theme-moss); color: var(--navy); font-family: var(--display); font-size: 18px; }
+.sd-bar .th-mono { background: var(--navy); color: var(--lime); }
+@supports (animation-timeline: scroll()) {
+  .sd-bar { animation: kd-bar-lift linear both; animation-timeline: scroll(nearest block); animation-range: 0 140px; }
+  .loud .sd-bar { animation-name: kd-bar-loud; }
+}
+@keyframes kd-bar-lift { to { box-shadow: 0 12px 28px -14px rgba(21, 31, 48, 0.32); } }
+@keyframes kd-bar-loud { to { box-shadow: 0 22px 30px -8px rgba(21, 31, 48, 0.7); background: var(--theme-cocoa); } }
+.sd-content { padding: 20px 16px 40px; display: grid; gap: 14px; }
+.sd-content p { margin: 0; max-width: 52ch; font-size: 16px; color: var(--muted); }
+.sd-content .sx-row span { aspect-ratio: 4 / 3; }
+
+/* L13 safety */
+.skip-box { position: relative; overflow: hidden; border-radius: 16px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); padding: 64px 18px 18px; }
+.k-skip { position: absolute; left: 12px; top: -48px; z-index: 2; padding: 10px 16px; border-radius: 999px; background: var(--navy); color: var(--cloud); text-decoration: none; transition: top 160ms var(--kd-ease-out); }
+.k-skip:focus { top: 12px; }
+.fake-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.fake-nav a { font-size: 15px; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--line-strong); text-decoration: none; }
+#skip-target { padding: 14px; border-radius: 12px; background: var(--lime-soft); }
+#skip-target:focus { outline: 3px solid var(--flag); outline-offset: 2px; }
+.rm-state { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 17px; margin-bottom: 16px; }
+.pill { font-family: var(--mono); font-size: 13px; padding: 4px 12px; border-radius: 999px; background: var(--lime); color: var(--navy); }
+
+/* practice */
+.tasks { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; counter-reset: t; }
+.tasks li { counter-increment: t; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 18px; border-radius: 20px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); }
+.tasks li::before { content: counter(t); font-family: var(--display); font-size: 34px; line-height: 1; color: var(--navy); background: var(--lime); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; }
+.tasks h3 { margin: 0 0 4px; font-size: 19px; }
+.tasks p { margin: 0 0 6px; font-size: 16.5px; }
+.foot { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding-top: 24px; }
+
+@media (max-width: 520px) {
+  .terms li { grid-template-columns: 1fr; gap: 2px; }
+  .bem-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .kd-card__name { font-size: 22px; line-height: 28px; }
+  .stage { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .k-track { animation: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="paw" viewBox="0 0 24 24"><ellipse cx="12" cy="16.2" rx="5.2" ry="4.4"/><ellipse cx="5" cy="10.4" rx="2.2" ry="2.8"/><ellipse cx="9.4" cy="6" rx="2.2" ry="2.9"/><ellipse cx="14.6" cy="6" rx="2.2" ry="2.9"/><ellipse cx="19" cy="10.4" rx="2.2" ry="2.8"/></symbol>
+</svg>
+
+<header class="mast">
+  <p class="mast__eyebrow">Kindred · src/styles · tokens.css, kindred.css, app.css</p>
+  <h1>The Kindred <em>CSS</em> Field Guide</h1>
+  <p class="mast__lede">Thirteen lessons on the stylesheet behind your rescue pages. Each one explains a technique, runs it live with the same rules from <code>kindred.css</code>, and points to the exact lines so you can open them next to this page.</p>
+  <div class="progress"><div class="progress__bar"><span id="pbar"></span></div><span id="ptext">0 of 13 lessons marked done</span></div>
+</header>
+
+<div class="shell">
+  <nav class="toc" aria-label="Lessons" id="toc">
+    <p class="toc__part">Foundations</p>
+    <a href="#tokens" data-id="tokens"><span class="n">1</span>Design tokens</a>
+    <a href="#themes" data-id="themes"><span class="n">2</span>Group themes</a>
+    <a href="#bem" data-id="bem"><span class="n">3</span>BEM naming</a>
+    <p class="toc__part">Layout</p>
+    <a href="#sections" data-id="sections"><span class="n">4</span>Section anatomy</a>
+    <a href="#minmax" data-id="minmax"><span class="n">5</span>minmax(0, 1fr)</a>
+    <a href="#container" data-id="container"><span class="n">6</span>Container queries</a>
+    <a href="#rail" data-id="rail"><span class="n">7</span>Rail to grid</a>
+    <p class="toc__part">Interaction &amp; motion</p>
+    <a href="#buttons" data-id="buttons"><span class="n">8</span>Hover &amp; press</a>
+    <a href="#reveal" data-id="reveal"><span class="n">9</span>Scroll reveal</a>
+    <a href="#pile" data-id="pile"><span class="n">10</span>The tag pile</a>
+    <a href="#marquee" data-id="marquee"><span class="n">11</span>Marquee bands</a>
+    <a href="#scrolltimeline" data-id="scrolltimeline"><span class="n">12</span>Scroll-driven</a>
+    <a href="#safety" data-id="safety"><span class="n">13</span>Safety nets</a>
+    <p class="toc__part">Next</p>
+    <a href="#practice" data-id="practice"><span class="n">→</span>Practice</a>
+  </nav>
+
+  <main>
+  <!-- ================= 1 TOKENS ================= -->
+  <section class="lesson" id="tokens">
+    <p class="eyebrow">Lesson 1 · tokens.css</p>
+    <h2>Design tokens</h2>
+    <div class="prose">
+      <p>Every color, spacing step, radius and font in Kindred is defined once, in <code>tokens.css</code>, as a CSS custom property. Components never write <code>#cadf42</code>. They write <code>var(--lime)</code>.</p>
+      <p>Two facts make this powerful:</p>
+      <ul>
+        <li><strong>Custom properties inherit,</strong> just like <code>color</code> does. A value set on an element reaches every element inside it.</li>
+        <li><strong>You can redefine one anywhere.</strong> The same name can hold different values in different parts of the page.</li>
+      </ul>
+      <p>Dark mode is just the second fact. <code>:root[data-theme="dark"]</code> gives <code>--paper</code> and <code>--ink</code> new values, and every component follows without being edited.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Change a brand color. The tiles and buttons redraw because they read the variable. Only this box changes, because the new value is set on the box, not on <code>:root</code>.</p></div>
+      <div class="controls">
+        <label>--lime <input type="color" id="tk-lime" value="#cadf42"></label>
+        <label>--peri <input type="color" id="tk-peri" value="#c0c4fe"></label>
+        <label>--navy <input type="color" id="tk-navy" value="#151f30"></label>
+        <button class="ctl" type="button" id="tk-reset">Reset</button>
+      </div>
+      <div class="stage" id="tk-stage">
+        <div class="m-stats">
+          <div class="m-stat m-stat--lime"><b>12</b><span>ready for adoption</span></div>
+          <div class="m-stat m-stat--navy"><b>48</b><span>rescued this year</span></div>
+          <div class="m-stat m-stat--peri"><b>9</b><span>updates from adopters</span></div>
+        </div>
+        <div class="btn-row">
+          <button class="kd-btn kd-btn--lime" type="button">hello@pawsqc.ph <svg class="paw"><use href="#paw"/></svg></button>
+          <button class="kd-btn kd-btn--accent" type="button">See all 12 animals</button>
+          <button class="kd-btn kd-btn--ink" type="button">Contact</button>
+        </div>
+      </div>
+      <pre class="readout" id="tk-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/tokens.css" data-lines="3–107 · excerpt"><script type="text/plain">
+:root {
+  /* brand primitives: fixed in both themes */
+  --lime: #cadf42;
+  --peri: #c0c4fe;
+  --navy: #151f30;
+
+  --paper: #f5f5f6;
+  --ink: #151f30;
+  --space-5: 24px;
+  --radius-l: 32px;
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+}
+:root[data-theme="dark"] {
+  --paper: #0f1624;   /* same names, new values */
+  --ink: #f5f5f6;
+}
+
+/* kindred.css:202 — components only ever read tokens */
+.kd-stat--lime { background: var(--lime); color: var(--navy); }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">The demo set <code>--lime</code> on the demo box. Why didn't the lime highlight in this page's title change too?</span></summary>
+      <div class="quiz__a">Custom properties only inherit downward. A value set on an element applies to that element and its descendants. The title sits outside the box, so it still inherits <code>--lime</code> from <code>:root</code>.</div></details>
+    <label class="done"><input type="checkbox" data-done="tokens"> I've got this one</label>
+  </section>
+
+  <!-- ================= 2 THEMES ================= -->
+  <section class="lesson" id="themes">
+    <p class="eyebrow">Lesson 2 · kindred.css 9–11, 30–33</p>
+    <h2>Group themes with one attribute</h2>
+    <div class="prose">
+      <p>Each rescue group picks one of four page colors. <code>PublicSite</code> puts that choice on the page root as <code>data-gtheme="harbor"</code>. Four short rules then translate it into three generic variables.</p>
+      <ul>
+        <li><code>--kd-g</code>: the group's color (top bar, hero blob, group buttons)</li>
+        <li><code>--kd-g-on</code>: the color that reads well <em>on top of</em> it</li>
+        <li><code>--kd-g2</code>: the partner color behind the hero blob</li>
+      </ul>
+      <p>Components only read the generic names, so they never know which theme is active. The <code>-on</code> suffix is a convention worth copying. Slate is the only dark theme, so <code>--theme-slate-on</code> is the light <code>#f5f5f6</code>, while the other three use navy.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Switch themes. Only the attribute on the box changes. Watch the chain below resolve to a new color.</p></div>
+      <div class="controls"><div class="seg" role="group" aria-label="Group theme" id="th-seg">
+        <button type="button" data-t="moss" aria-pressed="true">moss</button>
+        <button type="button" data-t="harbor" aria-pressed="false">harbor</button>
+        <button type="button" data-t="cocoa" aria-pressed="false">cocoa</button>
+        <button type="button" data-t="slate" aria-pressed="false">slate</button>
+      </div></div>
+      <div class="stage" id="th-stage" data-gtheme="moss">
+        <div class="th-top"><span class="th-mono">PQ</span><span>Paws of Quezon City</span><span class="th-end"><button class="kd-btn" type="button">Contact</button></span></div>
+        <div class="th-body">
+          <div><p class="th-name">Paws of Quezon City</p><button class="kd-btn kd-btn--group" type="button">Meet the animals</button></div>
+          <div class="th-art"><svg viewBox="0 0 200 200" aria-hidden="true">
+            <path class="th-back" d="M100 12c32 0 64 15 76 44s4 60-10 84-42 48-72 48-58-17-74-41S4 93 17 62 68 12 100 12z"/>
+            <path class="th-fill" d="M100 12c32 0 64 15 76 44s4 60-10 84-42 48-72 48-58-17-74-41S4 93 17 62 68 12 100 12z"/>
+            <use href="#paw" class="th-paw" x="64" y="62" width="72" height="72"/>
+          </svg></div>
+        </div>
+      </div>
+      <pre class="readout" id="th-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="9–11, 30–33, 52, 242"><script type="text/plain">
+:root {
+  --kd-g: var(--theme-moss);          /* default when nothing is set */
+  --kd-g-on: var(--theme-moss-on);
+  --kd-g2: var(--theme-moss-2);
+}
+[data-gtheme="moss"]   { --kd-g: var(--theme-moss);   --kd-g-on: var(--theme-moss-on);   --kd-g2: var(--theme-moss-2); }
+[data-gtheme="harbor"] { --kd-g: var(--theme-harbor); --kd-g-on: var(--theme-harbor-on); --kd-g2: var(--theme-harbor-2); }
+[data-gtheme="cocoa"]  { --kd-g: var(--theme-cocoa);  --kd-g-on: var(--theme-cocoa-on);  --kd-g2: var(--theme-cocoa-2); }
+[data-gtheme="slate"]  { --kd-g: var(--theme-slate);  --kd-g-on: var(--theme-slate-on);  --kd-g2: var(--theme-slate-2); }
+
+.kd-topbar     { background: var(--kd-g); color: var(--kd-g-on); }
+.kd-btn--group { background: var(--kd-g); color: var(--kd-g-on); }
+</script></div>
+    <div class="code" data-file="src/public/PublicSite.tsx" data-lines="35"><script type="text/plain">
+<div className="kd-pub" data-gtheme={state.page.theme}>
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">You want a fifth theme, "clay": #e8a87c with navy text and a lime partner. Which CSS do you touch?</span></summary>
+      <div class="quiz__a">Two places. In <code>tokens.css</code> add <code>--theme-clay</code>, <code>--theme-clay-on</code> and <code>--theme-clay-2</code>. In <code>kindred.css</code> add one line: <code>[data-gtheme="clay"] { --kd-g: var(--theme-clay); … }</code>. No component CSS changes. You'd also add "clay" wherever the theme options are listed in TypeScript and in the dashboard picker.</div></details>
+    <label class="done"><input type="checkbox" data-done="themes"> I've got this one</label>
+  </section>
+
+  <!-- ================= 3 BEM ================= -->
+  <section class="lesson" id="bem">
+    <p class="eyebrow">Lesson 3 · kindred.css 86–126</p>
+    <h2>BEM naming</h2>
+    <div class="prose">
+      <p>Every class is <strong>Block__Element--Modifier</strong>, with a <code>kd-</code> prefix so nothing collides with outside styles.</p>
+    </div>
+    <ul class="terms">
+      <li><b>Block</b><span>A standalone component. <code>kd-card</code>, <code>kd-topbar</code>, <code>kd-sec</code></span></li>
+      <li><b>__Element</b><span>A part that only makes sense inside its block. <code>kd-card__media</code>, <code>kd-card__name</code></span></li>
+      <li><b>--Modifier</b><span>A variant of a block or element. <code>kd-card--adoption</code>, <code>kd-btn--lime</code></span></li>
+    </ul>
+    <div class="prose">
+      <p>The payoff is flat specificity. Almost every selector is one class, or two when a modifier styles its own elements (<code>.kd-card--adoption .kd-card__name</code>). Rules rarely fight, and the HTML tells you which CSS applies.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Tap a class to outline what it targets. Then try the last chip: the second card's periwinkle mat comes from position, not from a modifier.</p></div>
+      <div class="controls" style="display:block">
+        <div class="chips" id="bem-chips">
+          <button class="chip chip--b" type="button" data-sel=".kd-card" aria-pressed="false">kd-card</button>
+          <button class="chip chip--m" type="button" data-sel=".kd-card--adoption" aria-pressed="false">kd-card--adoption</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__media" aria-pressed="false">kd-card__media</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__badge" aria-pressed="false">kd-card__badge</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__name" aria-pressed="false">kd-card__name</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__facts" aria-pressed="false">kd-card__facts</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__where" aria-pressed="false">kd-card__where</button>
+          <button class="chip chip--e" type="button" data-sel=".kd-card__cta" aria-pressed="false">kd-card__cta</button>
+          <button class="chip chip--p" type="button" data-sel=".kd-card--adoption:nth-child(even) .kd-card__media" aria-pressed="false">:nth-child(even) .kd-card__media</button>
+        </div>
+        <div class="legend"><span class="lb">block</span><span class="le">element</span><span class="lm">modifier</span></div>
+      </div>
+      <div class="stage">
+        <div class="bem-cards" id="bem-stage">
+          <article class="kd-card kd-card--adoption">
+            <div class="kd-card__media"><span class="kd-card__badge"><i></i>Live</span><div class="kd-card__photo" style="background:linear-gradient(160deg,#d8ae7e,#8b5a36)"><svg class="paw"><use href="#paw"/></svg></div></div>
+            <div class="kd-card__body"><p class="kd-card__name">Mango</p><p class="kd-card__facts">2 yrs · Female · Aspin</p><p class="kd-card__where"><svg class="paw"><use href="#paw"/></svg>Quezon City</p><span class="kd-card__cta">Meet Mango</span></div>
+          </article>
+          <article class="kd-card kd-card--adoption">
+            <div class="kd-card__media"><span class="kd-card__badge"><i></i>Live</span><div class="kd-card__photo" style="background:linear-gradient(160deg,#9aa0ac,#4b5160)"><svg class="paw"><use href="#paw"/></svg></div></div>
+            <div class="kd-card__body"><p class="kd-card__name">Kidlat</p><p class="kd-card__facts">8 mos · Male · Puspin</p><p class="kd-card__where"><svg class="paw"><use href="#paw"/></svg>Marikina</p><span class="kd-card__cta">Meet Kidlat</span></div>
+          </article>
+        </div>
+      </div>
+      <pre class="readout" id="bem-read">Tap a class above.</pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="105–119 · excerpt"><script type="text/plain">
+/* adoption: a coloured mat around the photo, facts and a pill below */
+.kd-card--adoption { background: var(--surface); box-shadow: var(--shadow-card); overflow: hidden; }
+.kd-card--adoption .kd-card__media { margin: 10px 10px 0; border-radius: 24px; aspect-ratio: 1 / 1; background: var(--lime); padding: 10px; }
+.kd-card--adoption:nth-child(even) .kd-card__media { background: var(--peri); }
+.kd-card--adoption .kd-card__name { font-family: var(--font-display); font-size: 28px; }
+.kd-card__cta { background: var(--lime); color: var(--navy); border-radius: var(--radius-full); }
+.kd-card--adoption:nth-child(even) .kd-card__cta { background: var(--peri); }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Is <code>kd-card__media--wide</code> valid BEM? What about <code>kd-card__media__img</code>?</span></summary>
+      <div class="quiz__a">The first is fine: a modifier on an element. The second isn't. BEM never chains elements. A part nested deeper is still just an element of the block, so it would be <code>kd-card__img</code>. Kindred avoids the question by styling <code>.kd-card__media img</code> directly.</div></details>
+    <label class="done"><input type="checkbox" data-done="bem"> I've got this one</label>
+  </section>
+
+  <!-- ================= 4 SECTIONS ================= -->
+  <section class="lesson" id="sections">
+    <p class="eyebrow">Lesson 4 · kindred.css 272–277 · PublicSite.tsx 151–160</p>
+    <h2>Section anatomy</h2>
+    <div class="prose">
+      <p>Every home page section is three nested layers:</p>
+      <ul>
+        <li><code>&lt;section class="kd-sec kd-sec--field-rescue"&gt;</code> is the <strong>band</strong>: full width, vertical padding, background color.</li>
+        <li><code>&lt;div class="kd-wrap"&gt;</code> is the <strong>column</strong>: max 1240px, centered, 16px side gutter (40px on wide screens).</li>
+        <li>A <strong>layout class</strong> for the content: <code>kd-grid</code>, <code>kd-rail</code>, <code>kd-cols</code>, <code>kd-prepgrid</code> or <code>kd-teamrail</code>.</li>
+      </ul>
+      <p>Keeping the band and column separate lets a background run edge to edge while the content lines up with every other section.</p>
+      <p>The band also carries <code>scroll-margin-top: 120px</code>. The top bar is sticky, so a jump link would park the heading at the very top of the screen, under the bar. Scroll margin tells the browser to stop short.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Jump with scroll margin off, and the heading lands under the bar. Turn it on and jump again. (Sizes are scaled down. The real margin is 120px.)</p></div>
+      <div class="controls">
+        <label><input type="checkbox" id="sx-layers"> Show layers</label>
+        <label><input type="checkbox" id="sx-margin"> scroll-margin-top</label>
+        <button class="ctl" type="button" data-jump="sx-adopt">Jump to For Adoption</button>
+        <button class="ctl" type="button" data-jump="sx-stories">Jump to Updates</button>
+      </div>
+      <div class="stage">
+        <div class="sx-box" id="sx-box">
+          <div class="sx-bar"><span class="th-mono">PQ</span>Paws of Quezon City</div>
+          <section class="sx-sec f-rescue" data-cls=".kd-sec--field-rescue"><div class="sx-wrap"><h4>Rescue Gallery</h4><div class="sx-row"><span></span><span></span><span></span></div></div></section>
+          <section class="sx-sec f-adopt" id="sx-adopt" data-cls=".kd-sec--field-adopt"><div class="sx-wrap"><h4>For Adoption</h4><div class="sx-row"><span></span><span></span><span></span></div></div></section>
+          <section class="sx-sec f-stories" id="sx-stories" data-cls=".kd-sec--field-stories"><div class="sx-wrap"><h4>Updates from adopters</h4><div class="sx-row"><span></span><span></span><span></span></div></div></section>
+          <section class="sx-sec f-adopt" data-cls=".kd-sec"><div class="sx-wrap"><h4>Meet our team</h4><div class="sx-row"><span></span><span></span><span></span></div></div></section>
+        </div>
+      </div>
+      <pre class="readout" id="sx-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="272–277"><script type="text/plain">
+.kd-sec { padding: 48px 0; scroll-margin-top: 120px; }
+.kd-sec--field-rescue  { background: var(--rescue-soft); --notch: var(--rescue-soft); }
+.kd-sec--field-adopt   { background: var(--paper); }
+.kd-sec--field-stories { background: var(--lime-soft); --notch: var(--lime-soft); }
+.kd-wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+@container (min-width: 720px) { .kd-sec { padding: 88px 0; } .kd-wrap { padding: 0 40px; } }
+</script></div>
+    <div class="code" data-file="src/public/PublicSite.tsx" data-lines="152–159"><script type="text/plain">
+<section className="kd-sec kd-sec--field-rescue" id="sec-rescues" aria-labelledby="h-rescues">
+  <div className="kd-wrap">
+    <SectionHeading id="h-rescues" title="Rescue Gallery" ... />
+    <div className="kd-rail" data-reveal="stagger" style={{ ... }}>
+      {rescues.slice(0, 4).map((r) => <AnimalCard ... />)}
+    </div>
+  </div>
+</section>
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">The field modifiers also set <code>--notch</code>. What is a variable on a section for, if the section never reads it?</span></summary>
+      <div class="quiz__a">The children read it. The paw badge draws a ring with <code>box-shadow: 0 0 0 7px var(--notch, var(--paper))</code>. Each section sets <code>--notch</code> to its own background, so the ring always matches what's behind the card and looks like a cut-out. Where no section sets it, the fallback <code>--paper</code> is used. This is lesson 1 again: redefine a variable on a subtree.</div></details>
+    <label class="done"><input type="checkbox" data-done="sections"> I've got this one</label>
+  </section>
+
+  <!-- ================= 5 MINMAX ================= -->
+  <section class="lesson" id="minmax">
+    <p class="eyebrow">Lesson 5 · kindred.css 129</p>
+    <h2>Why minmax(0, 1fr)</h2>
+    <div class="prose">
+      <p>Kindred writes columns as <code>repeat(2, minmax(0, 1fr))</code> instead of <code>repeat(2, 1fr)</code>. It looks redundant. It isn't.</p>
+      <p>A <code>1fr</code> track has a hidden minimum: it won't shrink below the <em>min-content</em> width of what's inside it. A card name with <code>white-space: nowrap</code> has a min-content width equal to the entire name. One long name forces its column wider and pushes the grid out of its container. <code>minmax(0, 1fr)</code> sets that minimum to zero, so both columns stay equal and the ellipsis can do its job.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">The dashed line is the container. Switch between the two column definitions.</p></div>
+      <div class="controls"><div class="seg" role="group" aria-label="Column definition" id="mm-seg">
+        <button type="button" data-m="plain" aria-pressed="true">repeat(2, 1fr)</button>
+        <button type="button" data-m="minmax" aria-pressed="false">repeat(2, minmax(0, 1fr))</button>
+      </div></div>
+      <div class="stage"><div class="mm-scroll">
+        <div class="mm-frame" id="mm-frame"><div class="mm-grid is-plain" id="mm-grid">
+          <div class="mm-card"><i></i><p class="mm-name">Sir Reginald Fluffington-Barksworth III</p></div>
+          <div class="mm-card"><i></i><p class="mm-name">Luna</p></div>
+        </div></div>
+      </div></div>
+      <pre class="readout" id="mm-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="129, 111"><script type="text/plain">
+.kd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+
+.kd-card--adoption .kd-card__name {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Flex items have the same trap. What's the fix there, and where does Kindred use it?</span></summary>
+      <div class="quiz__a"><code>min-width: 0</code> on the flex or grid child. Kindred uses it on <code>.kd-topbar__brand</code> so a long group name truncates instead of pushing the Contact button off screen, and on <code>.kd-dash__body</code> so wide dashboard content scrolls inside its panel.</div></details>
+    <label class="done"><input type="checkbox" data-done="minmax"> I've got this one</label>
+  </section>
+
+  <!-- ================= 6 CONTAINER ================= -->
+  <section class="lesson" id="container">
+    <p class="eyebrow">Lesson 6 · app.css 4 · kindred.css 133–137</p>
+    <h2>Container queries</h2>
+    <div class="prose">
+      <p>A media query asks how wide the browser window is. A container query asks how wide a <em>specific element</em> is. Kindred turns <code>#root</code> into a container with one line, so every <code>@container</code> rule responds to the app's own width. The animal overlay declares its own container too.</p>
+      <p>This is what makes the dashboard preview work. The same public page renders inside a narrower panel and lays itself out for the space it actually has. A media query would see a wide window and wrongly pick the desktop layout.</p>
+      <p>Everything is <strong>mobile first</strong>: the base rule is the phone layout, and each <code>@container (min-width: …)</code> adds to it as space grows.</p>
+    </div>
+    <div class="scrollx"><table class="bp">
+      <thead><tr><th>Width</th><th>What changes</th></tr></thead>
+      <tbody>
+        <tr><td>640px</td><td>"Before you adopt" goes to 2 columns</td></tr>
+        <tr><td>720px</td><td>The main step: grids go to 3 columns, rails become grids, bigger section padding, 40px gutters</td></tr>
+        <tr><td>760px</td><td>Animal detail overlay splits into photo + facts</td></tr>
+        <tr><td>900px</td><td>Top bar shows links, hero splits in two, dashboard gets its sidebar</td></tr>
+        <tr><td>960px</td><td>"Before you adopt" goes to 3 columns</td></tr>
+        <tr><td>1040px</td><td><code>.kd-grid--4</code> goes to 4 columns</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Drag the width. Your browser window stays the same size; only the container changes, and the grid responds to it.</p></div>
+      <div class="controls"><label>container width <input type="range" id="cq-w" min="300" max="1100" step="10" value="400"> <span class="val" id="cq-wv">400px</span></label></div>
+      <div class="split">
+        <div class="ruler" aria-hidden="true"><div class="ruler__track">
+          <span class="ruler__tick" style="left:calc(720 / 1100 * 100%)">720</span>
+          <span class="ruler__tick" style="left:calc(1040 / 1100 * 100%)">1040</span>
+          <span class="ruler__now" id="cq-now"></span>
+        </div></div>
+        <ul class="rules" id="cq-rules">
+          <li class="on" data-min="0"><span>.kd-grid → repeat(2, minmax(0, 1fr))</span><span class="st"></span></li>
+          <li data-min="720"><span>@container (min-width: 720px) → 3 columns</span><span class="st"></span></li>
+          <li data-min="1040"><span>@container (min-width: 1040px) → .kd-grid--4: 4 columns</span><span class="st"></span></li>
+        </ul>
+      </div>
+      <div class="stage"><div class="cq-scroll"><div class="cq-box" id="cq-box" style="width:400px"><div class="k-wrap">
+        <div class="k-grid k-grid--4" id="cq-grid"></div>
+      </div></div></div></div>
+      <pre class="readout" id="cq-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/app.css + kindred.css" data-lines="app 4 · kindred 129–137, 143"><script type="text/plain">
+/* app.css:4 — make the app root a size container */
+#root { container-type: inline-size; min-height: 100vh; }
+
+/* kindred.css — phone first, then grow */
+.kd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+@container (min-width: 720px) {
+  .kd-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 20px; }
+}
+@container (min-width: 1040px) { .kd-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+/* container units: 13cqi = 13% of the container's width */
+.kd-hero__name { font-size: clamp(56px, 13cqi, 112px); }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">The hero name uses <code>clamp(56px, 13cqi, 112px)</code>. What size is it in a 600px container? In a 400px one?</span></summary>
+      <div class="quiz__a"><code>cqi</code> is 1% of the container's inline size. At 600px, 13cqi is 78px, which sits between 56 and 112, so it's 78px. At 400px, 13cqi is 52px, below the 56px floor, so <code>clamp</code> holds it at 56px.</div></details>
+    <label class="done"><input type="checkbox" data-done="container"> I've got this one</label>
+  </section>
+
+  <!-- ================= 7 RAIL ================= -->
+  <section class="lesson" id="rail">
+    <p class="eyebrow">Lesson 7 · kindred.css 130–135 · PublicSite.tsx 155</p>
+    <h2>Rail to grid</h2>
+    <div class="prose">
+      <p>On phones the Rescue Gallery is a swipe carousel. From 720px it's a grid. Same element, same cards; only the CSS changes.</p>
+      <ul>
+        <li><strong>The rail:</strong> <code>grid-auto-flow: column</code> puts every card in one row, and <code>grid-auto-columns: 72%</code> makes each one 72% wide so the next card peeks in, hinting that you can swipe. <code>scroll-snap-type: x mandatory</code> makes a swipe land on a card.</li>
+        <li><strong>The bleed:</strong> <code>margin: 0 -16px</code> pulls the rail out past <code>.kd-wrap</code>'s gutter so cards slide off the true screen edge. <code>padding: 0 16px</code> pushes the first card back into line, and <code>scroll-margin-left: 16px</code> makes snapping respect that.</li>
+        <li><strong>The handoff:</strong> React passes the card count as <code>--n</code> and a column cap as <code>--max</code>. With two rescues you get two columns capped at 360px rather than two cards stretched across a four-column grid.</li>
+      </ul>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Below 720px, swipe the cards (or shift + scroll). Turn off snapping to feel the difference. Then widen past 720 and change the count.</p></div>
+      <div class="controls">
+        <label>width <input type="range" id="rl-w" min="300" max="1100" step="10" value="400"> <span class="val" id="rl-wv">400px</span></label>
+        <label>rescues <input type="range" id="rl-n" min="1" max="4" step="1" value="4"> <span class="val" id="rl-nv">4</span></label>
+        <label><input type="checkbox" id="rl-snap" checked> scroll snap</label>
+        <label><input type="checkbox" id="rl-bleed"> show the bleed</label>
+      </div>
+      <div class="stage" id="rl-stage"><div class="cq-scroll"><div class="cq-box" id="rl-box" style="width:400px"><div class="k-wrap">
+        <div class="k-rail" id="rl-rail"></div>
+      </div></div></div></div>
+      <pre class="readout" id="rl-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="130–135"><script type="text/plain">
+.kd-rail {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 72%; gap: 12px;
+  overflow-x: auto; scroll-snap-type: x mandatory;
+  padding: 0 16px 4px; margin: 0 -16px;          /* the bleed */
+  scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.kd-rail > * { scroll-snap-align: start; scroll-margin-left: 16px; }
+@container (min-width: 720px) {
+  .kd-rail {
+    grid-auto-flow: row; grid-auto-columns: auto;
+    grid-template-columns: repeat(var(--n, 4), minmax(0, var(--max, 1fr)));
+    overflow: visible; margin: 0; padding: 0; gap: 20px;
+  }
+}
+</script></div>
+    <div class="code" data-file="src/public/PublicSite.tsx" data-lines="155"><script type="text/plain">
+<div className="kd-rail" data-reveal="stagger" style={{
+  ['--n' as string]: Math.min(4, rescues.length),
+  ['--max' as string]: rescues.length >= 3 ? '1fr' : '360px',
+}}>
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Why does the rail hide its scrollbar and set <code>overscroll-behavior-x: contain</code>?</span></summary>
+      <div class="quiz__a">The peeking card already tells people they can swipe, so a scrollbar is visual noise on phones. <code>overscroll-behavior-x: contain</code> stops a swipe that reaches the end of the rail from carrying over into browser back/forward gestures or scrolling the page sideways.</div></details>
+    <label class="done"><input type="checkbox" data-done="rail"> I've got this one</label>
+  </section>
+
+  <!-- ================= 8 BUTTONS ================= -->
+  <section class="lesson" id="buttons">
+    <p class="eyebrow">Lesson 8 · kindred.css 39–67</p>
+    <h2>Hover, press and color-mix</h2>
+    <div class="prose">
+      <p><strong>Hover colors are mixed, not picked.</strong> <code>color-mix(in oklab, var(--lime) 86%, var(--navy))</code> is 86% lime with 14% navy. It's computed from tokens, so hover states follow when a token changes, and there are no extra hex values to maintain. Mixing in <code>oklab</code> keeps the result from going muddy.</p>
+      <p><strong>Hover only exists for mice.</strong> Every hover rule sits inside <code>@media (hover: hover) and (pointer: fine)</code>. On a phone, a tap leaves <code>:hover</code> stuck on until you tap somewhere else. The query keeps hover styles to devices that really hover.</p>
+      <p><strong>Press feedback works everywhere.</strong> <code>:active { transform: scale(0.97) }</code> is outside the query, so taps get it. Its transition uses <code>--kd-dur-press</code> (140ms) while colors use <code>--kd-dur-ui</code> (200ms). A press should feel instant; a color can ease.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Hover the lime and group buttons while you move the mix. Press and hold any button. Then simulate a touch screen.</p></div>
+      <div class="controls">
+        <label>mix <input type="range" id="bt-mix" min="40" max="100" step="1" value="86"> <span class="val" id="bt-mixv">86%</span></label>
+        <label><input type="checkbox" id="bt-touch"> simulate a touch screen</label>
+      </div>
+      <div class="stage can-hover" id="bt-stage" data-gtheme="moss">
+        <div class="btn-row">
+          <button class="kd-btn kd-btn--lime" type="button">lime</button>
+          <button class="kd-btn kd-btn--group" type="button">group</button>
+          <button class="kd-btn kd-btn--accent" type="button">accent</button>
+          <button class="kd-btn kd-btn--ink" type="button">ink</button>
+          <button class="kd-btn kd-btn--primary" type="button">primary</button>
+          <button class="kd-btn kd-btn--secondary" type="button">secondary</button>
+          <button class="kd-btn kd-btn--ghost" type="button">ghost</button>
+        </div>
+        <div class="swatches">
+          <div class="sw"><i style="background:var(--lime)"></i>--lime</div>
+          <span class="sw-op">+</span>
+          <div class="sw"><i style="background:var(--navy)"></i>--navy</div>
+          <span class="sw-op">=</span>
+          <div class="sw sw--mix"><i id="bt-sw"></i><span id="bt-swl">hover</span></div>
+        </div>
+      </div>
+      <pre class="readout" id="bt-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="39–67 · excerpt"><script type="text/plain">
+.kd-btn {
+  min-height: 50px; padding: 0 26px; border-radius: var(--radius-full);
+  transition: transform var(--kd-dur-press) var(--kd-ease-out),
+              background-color var(--kd-dur-ui) ease, color var(--kd-dur-ui) ease;
+}
+.kd-btn:active:not(:disabled) { transform: scale(0.97); }
+.kd-btn--lime { background: var(--lime); color: var(--navy); }
+.kd-btn--secondary { background: transparent; box-shadow: inset 0 0 0 1.5px currentColor; }
+
+@media (hover: hover) and (pointer: fine) {
+  .kd-btn--lime:hover:not(:disabled)  { background: color-mix(in oklab, var(--lime) 86%, var(--navy)); }
+  .kd-btn--group:hover:not(:disabled) { background: color-mix(in oklab, var(--kd-g) 86%, var(--kd-g-on)); }
+  .kd-btn--secondary:hover:not(:disabled) { background: color-mix(in oklab, currentColor 7%, transparent); }
+}
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Why does the secondary button draw its outline with <code>box-shadow: inset 0 0 0 1.5px</code> instead of <code>border</code>?</span></summary>
+      <div class="quiz__a">A border adds to the element's size, so an outlined button would be 3px taller than the filled buttons beside it unless you compensated with padding. An inset shadow draws inside the box without affecting layout. It uses <code>currentColor</code>, so it always matches the text.</div></details>
+    <label class="done"><input type="checkbox" data-done="buttons"> I've got this one</label>
+  </section>
+
+  <!-- ================= 9 REVEAL ================= -->
+  <section class="lesson" id="reveal">
+    <p class="eyebrow">Lesson 9 · motion.tsx 9–24 · kindred.css 706–729</p>
+    <h2>Scroll reveal and stagger</h2>
+    <div class="prose">
+      <p><strong>JavaScript decides when; CSS decides how.</strong> <code>useReveal()</code> watches every <code>[data-reveal]</code> element with an IntersectionObserver and adds <code>data-shown</code> once it's 10% in view. That is all the JavaScript does.</p>
+      <p>The CSS hides the children until <code>data-shown</code> appears, then animates them in. The stagger comes from <code>--i</code>: <code>:nth-child(2)</code> sets <code>--i: 1</code>, <code>:nth-child(3)</code> sets <code>--i: 2</code>, and so on. Each child's delay is <code>calc(var(--i) * 80ms)</code>.</p>
+      <p>The fill mode <code>backwards</code> matters. During its delay, each card is held at the <code>from</code> keyframe (invisible), so cards don't flash on and then vanish before their turn.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Replay the reveal, change the step between cards, or simulate reduced motion.</p></div>
+      <div class="controls">
+        <button class="ctl" type="button" id="rv-play">Replay</button>
+        <label>step <input type="range" id="rv-step" min="0" max="240" step="10" value="80"> <span class="val" id="rv-stepv">80ms</span></label>
+        <label><input type="checkbox" id="rv-rm"> simulate reduced motion</label>
+      </div>
+      <div class="stage" id="rv-stage">
+        <div class="rv-grid" id="rv-grid" data-reveal="stagger" data-shown=""></div>
+      </div>
+      <pre class="readout" id="rv-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/public/motion.tsx" data-lines="9–24"><script type="text/plain">
+export function useReveal() {
+  useEffect(() => {
+    const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]:not([data-shown])'));
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        (en.target as HTMLElement).dataset.shown = '';   // that's the whole handoff
+        io.unobserve(en.target);                         // once only
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  });
+}
+</script></div>
+    <div class="code" data-file="src/styles/kindred.css" data-lines="706–729 · excerpt"><script type="text/plain">
+[data-reveal] > :nth-child(2) { --i: 1; }
+[data-reveal] > :nth-child(3) { --i: 2; }
+/* … up to :nth-child(n+8) { --i: 7; } */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal="stagger"]:not([data-shown]) > * { opacity: 0; }
+  [data-reveal="stagger"][data-shown] > * {
+    animation: kd-in 760ms var(--kd-ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 80ms);
+  }
+}
+@keyframes kd-in { from { opacity: 0; transform: translateY(32px); } }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q"><code>useReveal</code>'s <code>useEffect</code> has no dependency array, so it runs after every render. Isn't that wasteful?</span></summary>
+      <div class="quiz__a">It's deliberate. Sections can appear later, after data loads or a filter changes, and they need observing too. The query only picks up elements <em>without</em> <code>data-shown</code>, so cards that already revealed are skipped and each run stays cheap.</div></details>
+    <label class="done"><input type="checkbox" data-done="reveal"> I've got this one</label>
+  </section>
+
+  <!-- ================= 10 PILE ================= -->
+  <section class="lesson" id="pile">
+    <p class="eyebrow">Lesson 10 · kindred.css 579–591, 727, 731</p>
+    <h2>The tag pile</h2>
+    <div class="prose">
+      <p>The footer's section tags look hand-tossed, but there's no randomness. <code>:nth-child(5n+1)</code> through <code>:nth-child(5n)</code> give five tags five angles through <code>--r</code>, then the pattern repeats. <code>margin-right: -6px</code> lets neighbors overlap a little, which sells the pile.</p>
+      <p>Keeping the angle in a variable pays off twice. The resting transform is <code>rotate(var(--r))</code>, and the drop-in keyframe starts from <code>rotate(calc(var(--r) - 16deg))</code>. One keyframe serves every tag, and each swings into its own angle.</p>
+      <p>The bounce is the easing: <code>cubic-bezier(0.34, 1.56, 0.64, 1)</code>. A second y value above 1 overshoots the end, then settles back.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Add tags to watch the 5-step pattern repeat. Replay with and without the overshoot. Hover a tag to straighten it.</p></div>
+      <div class="controls">
+        <button class="ctl" type="button" id="pl-play">Replay drop</button>
+        <button class="ctl" type="button" id="pl-add">Add tag</button>
+        <button class="ctl" type="button" id="pl-rem">Remove tag</button>
+        <label><input type="checkbox" id="pl-bounce" checked> overshoot easing</label>
+      </div>
+      <div class="stage" id="pl-stage"><div class="k-tags" id="pl-tags" data-reveal="drop" data-shown=""></div></div>
+      <pre class="readout" id="pl-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="579–591 · excerpt"><script type="text/plain">
+.kd-tags a {
+  margin-right: -6px;
+  transform: rotate(var(--r, 0deg));
+  transition: transform 320ms var(--kd-ease-out);
+}
+.kd-tags a:nth-child(5n+1) { --r: -9deg; background: var(--peri); color: var(--navy); }
+.kd-tags a:nth-child(5n+2) { --r: 5deg; }
+.kd-tags a:nth-child(5n+3) { --r: -4deg; background: var(--lime); color: var(--navy); }
+.kd-tags a:nth-child(5n+4) { --r: 8deg; }
+.kd-tags a:nth-child(5n)   { --r: -2deg; }
+@media (hover: hover) and (pointer: fine) {
+  .kd-tags a:hover { transform: rotate(0deg) translateY(-4px); }
+}
+
+[data-reveal="drop"][data-shown] > * {
+  animation: kd-drop 720ms cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+@keyframes kd-drop { from { opacity: 0; transform: translateY(-72px) rotate(calc(var(--r, 0deg) - 16deg)); } }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">The 9th tag gets <code>--r: 8deg</code>. Which rule matches it, and why?</span></summary>
+      <div class="quiz__a"><code>:nth-child(5n+4)</code>. With n = 1, 5n+4 = 9. The other rules give 6 (5n+1), 7 (5n+2), 8 (5n+3) and 10 (5n). Every pattern of five restarts the cycle.</div></details>
+    <label class="done"><input type="checkbox" data-done="pile"> I've got this one</label>
+  </section>
+
+  <!-- ================= 11 MARQUEE ================= -->
+  <section class="lesson" id="marquee">
+    <p class="eyebrow">Lesson 11 · kindred.css 224–236</p>
+    <h2>Marquee bands</h2>
+    <div class="prose">
+      <p>The endless scroll is a trick with two copies. The track holds the list twice, side by side, and is <code>width: max-content</code> so it's as long as both. The animation moves it by <code>translateX(-50%)</code>: exactly one copy's width. At that moment copy 2 sits exactly where copy 1 started, so the loop restarts with no visible jump.</p>
+      <p>Band B runs in <code>reverse</code> at 72s against band A's 60s, so the two never fall into step. Hovering pauses both with <code>animation-play-state</code>. Each band is 112% wide with <code>margin-left: -6%</code> so the tilted ends never show a gap at the sides.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Reveal the two copies, then speed it up and watch copy 2 take copy 1's place. Hover to pause.</p></div>
+      <div class="controls">
+        <label><input type="checkbox" id="mq-seams"> reveal the copies</label>
+        <label>duration <input type="range" id="mq-dur" min="4" max="60" step="1" value="60"> <span class="val" id="mq-durv">60s</span></label>
+        <label>tilt <input type="range" id="mq-tilt" min="-8" max="8" step="0.2" value="-2.6"> <span class="val" id="mq-tiltv">-2.6°</span></label>
+      </div>
+      <div class="stage" id="mq-stage" style="padding:0">
+        <div class="k-bands">
+          <div class="k-band k-band--a"><div class="k-track" id="mq-a"></div></div>
+          <div class="k-band k-band--b"><div class="k-track" id="mq-b"></div></div>
+        </div>
+      </div>
+      <pre class="readout" id="mq-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="224–236"><script type="text/plain">
+.kd-bands { position: relative; overflow: clip; padding: 44px 0 36px; }
+.kd-band { width: 112%; margin-left: -6%; overflow: hidden; padding: 12px 0; }
+.kd-band--a { background: var(--lime); transform: rotate(-2.6deg); }
+.kd-band--b { background: var(--peri); transform: rotate(2deg); margin-top: -4px; }
+.kd-band__track { display: flex; width: max-content; }
+@media (prefers-reduced-motion: no-preference) {
+  .kd-band__track { animation: kd-marquee 60s linear infinite; }
+  .kd-band--b .kd-band__track { animation-direction: reverse; animation-duration: 72s; }
+  .kd-bands:hover .kd-band__track { animation-play-state: paused; }
+}
+@keyframes kd-marquee { to { transform: translateX(-50%); } }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">What goes wrong if the two copies aren't identical in width?</span></summary>
+      <div class="quiz__a"><code>-50%</code> is half the track, which equals one copy only when both copies match. If they differ, the track is in the wrong spot when the loop restarts and the text visibly jumps.</div></details>
+    <label class="done"><input type="checkbox" data-done="marquee"> I've got this one</label>
+  </section>
+
+  <!-- ================= 12 SCROLL TIMELINE ================= -->
+  <section class="lesson" id="scrolltimeline">
+    <p class="eyebrow">Lesson 12 · kindred.css 733–737</p>
+    <h2>Scroll-driven animation</h2>
+    <div class="prose">
+      <p>The public top bar gains a shadow as you scroll, with no JavaScript. <code>animation-timeline: scroll(root block)</code> ties the animation's progress to the page's scroll position instead of to time. <code>animation-range: 0 140px</code> maps 0px scrolled to the start and 140px to the end, so the shadow fades in over the first 140px.</p>
+      <p>It's wrapped in <code>@supports (animation-timeline: scroll())</code>. Browsers without support skip the block and keep a flat bar, which is fine. That's the pattern for any enhancement where the fallback is acceptable.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Scroll inside the box. Turn on "exaggerate" to make the effect obvious. This demo uses <code>scroll(nearest block)</code> because it scrolls a box, not the page.</p></div>
+      <div class="controls"><label><input type="checkbox" id="sd-loud"> exaggerate the effect</label></div>
+      <div class="stage" id="sd-stage">
+        <div class="sd-box" id="sd-box">
+          <div class="sd-bar"><span class="th-mono">PQ</span>Paws of Quezon City</div>
+          <div class="sd-content">
+            <p>Scroll down slowly. The bar's shadow follows your scroll position for the first 140px, then stays.</p>
+            <div class="sx-row"><span></span><span></span><span></span></div>
+            <div class="sx-row"><span></span><span></span><span></span></div>
+            <div class="sx-row"><span></span><span></span><span></span></div>
+            <div class="sx-row"><span></span><span></span><span></span></div>
+            <p>Scroll back up and it reverses, because the timeline is your scroll position, not a clock.</p>
+          </div>
+        </div>
+      </div>
+      <pre class="readout" id="sd-read"></pre>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css" data-lines="733–737"><script type="text/plain">
+/* the top bar lifts off the page once you scroll (scroll-driven, where supported) */
+@supports (animation-timeline: scroll()) {
+  .kd-pub > .kd-topbar {
+    animation: kd-bar-lift linear both;
+    animation-timeline: scroll(root block);
+    animation-range: 0 140px;
+  }
+}
+@keyframes kd-bar-lift { to { box-shadow: 0 12px 28px -14px rgba(21, 31, 48, 0.32); } }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Why <code>linear</code> easing here, when everything else uses <code>--kd-ease-out</code>?</span></summary>
+      <div class="quiz__a">Progress already comes from your finger or wheel. A curve would make the shadow change unevenly while you scroll evenly. Linear maps scroll distance straight to shadow strength. The <code>both</code> fill keeps the start state before scrolling and the end state after 140px.</div></details>
+    <label class="done"><input type="checkbox" data-done="scrolltimeline"> I've got this one</label>
+  </section>
+
+  <!-- ================= 13 SAFETY ================= -->
+  <section class="lesson" id="safety">
+    <p class="eyebrow">Lesson 13 · kindred.css 739–746 · app.css 6, 13–14</p>
+    <h2>Safety nets</h2>
+    <div class="prose">
+      <p>Three rules protect people who need them. They're easy to forget and expensive to add later.</p>
+      <ul>
+        <li><strong>Reduced motion, two layers.</strong> Decorative animation sits inside <code>@media (prefers-reduced-motion: no-preference)</code>, so it only runs for people who haven't asked for less motion. As a backstop, a <code>reduce</code> block at the end shrinks every animation to 1ms and limits transitions to opacity and color.</li>
+        <li><strong>Visible keyboard focus.</strong> <code>:focus-visible</code> draws a 2px outline for keyboard users only. A mouse click doesn't trigger it.</li>
+        <li><strong>A skip link.</strong> <code>.kd-skip</code> sits off screen at <code>top: -48px</code> and slides to <code>top: 12px</code> on focus, so keyboard users can jump past the navigation.</li>
+      </ul>
+    </div>
+
+    <div class="demo">
+      <div class="demo__bar"><span class="demo__tag">Try it</span><p class="demo__hint">Click "Start here", then press Tab once. The skip link appears. Press Enter to use it.</p></div>
+      <div class="stage">
+        <div class="rm-state">Your device is asking for: <span class="pill" id="rm-pill">…</span></div>
+        <button class="ctl" type="button" id="sk-start" style="margin-bottom:12px">Start here</button>
+        <div class="skip-box">
+          <a class="k-skip" href="#skip-target" id="sk-link">Skip to content</a>
+          <nav class="fake-nav" aria-label="Demo navigation"><a href="#safety">Rescues</a><a href="#safety">Adopt</a><a href="#safety">Updates</a><a href="#safety">Team</a><a href="#safety">Donate</a></nav>
+          <div id="skip-target" tabindex="-1">Main content. Focus landed here, past the five links.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code" data-file="src/styles/kindred.css + app.css" data-lines="kindred 739–746 · app 6, 13–14"><script type="text/plain">
+@media (prefers-reduced-motion: reduce) {
+  .kd-root *, .kd-proto *, .kd-ov * {
+    transition-property: opacity, background-color, color !important;
+    animation-duration: 1ms !important;
+  }
+  .kd-card, a.kd-stat, .kd-pawbadge { transform: none !important; }
+}
+
+/* app.css */
+#root :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.kd-skip { position: absolute; left: 12px; top: -48px; transition: top 160ms var(--kd-ease-out); }
+.kd-skip:focus { top: 12px; }
+</script></div>
+
+    <details class="quiz"><summary><span class="quiz__label">Check</span><span class="quiz__q">Why does the backstop use <code>animation-duration: 1ms</code> instead of <code>animation: none</code>?</span></summary>
+      <div class="quiz__a">With 1ms the animation still technically runs. Elements land on their final keyframe state, and any code listening for <code>animationend</code> still gets the event. With <code>none</code>, neither happens, which can leave things half-hidden or stuck waiting.</div></details>
+    <label class="done"><input type="checkbox" data-done="safety"> I've got this one</label>
+  </section>
+
+  <!-- ================= PRACTICE ================= -->
+  <section class="lesson" id="practice">
+    <p class="eyebrow">Next · in your own codebase</p>
+    <h2>Practice on the real code</h2>
+    <div class="prose"><p>Reading builds recognition; changing the code builds mastery. Each task touches one lesson. Run <code>npm run dev</code>, make the change, and check it at phone and desktop widths.</p></div>
+    <ol class="tasks">
+      <li><div><h3>Add a "clay" group theme</h3><p>Lesson 2. Add three tokens in <code>tokens.css</code> and one <code>[data-gtheme="clay"]</code> line in <code>kindred.css</code> next to lines 30–33. Set a group to it and preview.</p></div></li>
+      <li><div><h3>Give Volunteer a two-up layout</h3><p>Lessons 4 and 7. In <code>PublicSite.tsx</code> line 189, add <code>'volunteer'</code> to <code>twoUp</code>. Notice you changed a layout without writing any CSS.</p></div></li>
+      <li><div><h3>Retune the stagger</h3><p>Lesson 9. Change <code>80ms</code> to <code>120ms</code> in the <code>[data-reveal="stagger"]</code> rule. Compare a 4-card section with an 8-card one. Where does it start to feel slow?</p></div></li>
+      <li><div><h3>Add a hover to the jump chips</h3><p>Lesson 8. Give <code>.kd-jump a</code> a hover background with <code>color-mix(in oklab, var(--ink) 7%, transparent)</code>, inside the <code>(hover: hover) and (pointer: fine)</code> query.</p></div></li>
+      <li><div><h3>Break it on purpose</h3><p>Lesson 5. Change <code>.kd-grid</code> to plain <code>1fr</code> and give an animal a very long name. Watch the grid overflow, then restore it.</p></div></li>
+    </ol>
+    <p class="foot">Line numbers match src/styles at commit 1eb1adb. Demos replicate the real rules, with sizes scaled where noted.</p>
+  </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const css = (el, p) => getComputedStyle(el).getPropertyValue(p).trim();
+  const PAW = '<svg class="paw"><use href="#paw"/></svg>';
+
+  /* ---------- code highlighting ---------- */
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const RE = /(\/\*[\s\S]*?\*\/|\/\/[^\n]*)|(@[\w-]+)|(\[[\w-]+(?:="[^"]*")?\])|(--[\w-]+)|('[^'\n]*'|"[^"\n]*")|(#[0-9a-fA-F]{3,8}\b)|(\b\d*\.?\d+(?:px|ms|s|deg|fr|%|ch|cqi|em|vh)?(?![\w-]))|((?:\.|::?)[a-zA-Z][\w-]*(?:\([^)\n]*\))?)|(\b[a-z-]+(?=\s*:\s))/g;
+  const KIND = ['c', 'at', 'sel', 'var', 'str', 'num', 'num', 'sel', 'prop'];
+  function hl(src) {
+    let out = '', last = 0;
+    src.replace(RE, (m, ...g) => {
+      const at = g[g.length - 2];
+      const k = KIND[g.slice(0, 9).findIndex((x) => x !== undefined)];
+      out += esc(src.slice(last, at)) + `<span class="t-${k}">${esc(m)}</span>`;
+      last = at + m.length;
+      return m;
+    });
+    return out + esc(src.slice(last));
+  }
+  $$('.code').forEach((el) => {
+    const raw = el.querySelector('script').textContent.replace(/^\n+|\s+$/g, '');
+    el.innerHTML = `<div class="code__file"><span>${esc(el.dataset.file)}</span><span>${esc(el.dataset.lines || '')}</span></div><pre><code>${hl(raw)}</code></pre>`;
+  });
+
+  /* ---------- progress ---------- */
+  const KEY = 'kindred-css-guide-done';
+  let done = new Set();
+  try { done = new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch (e) {}
+  const boxes = $$('[data-done]');
+  function paint() {
+    boxes.forEach((b) => { b.checked = done.has(b.dataset.done); });
+    $$('#toc a').forEach((a) => a.classList.toggle('is-done', done.has(a.dataset.id)));
+    const n = boxes.filter((b) => done.has(b.dataset.done)).length;
+    $('#pbar').style.width = (n / boxes.length * 100) + '%';
+    $('#ptext').textContent = `${n} of ${boxes.length} lessons marked done`;
+  }
+  boxes.forEach((b) => b.addEventListener('change', () => {
+    b.checked ? done.add(b.dataset.done) : done.delete(b.dataset.done);
+    try { localStorage.setItem(KEY, JSON.stringify([...done])); } catch (e) {}
+    paint();
+  }));
+  paint();
+
+  /* current lesson in the index */
+  const links = $$('#toc a');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((ents) => {
+      ents.forEach((en) => {
+        if (!en.isIntersecting) return;
+        links.forEach((a) => a.setAttribute('aria-current', a.dataset.id === en.target.id ? 'true' : 'false'));
+        const cur = links.find((a) => a.dataset.id === en.target.id);
+        const toc = $('#toc');
+        if (cur && toc.scrollWidth > toc.clientWidth) toc.scrollTo({ left: cur.offsetLeft - 16, behavior: 'smooth' });
+      });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    $$('.lesson').forEach((s) => io.observe(s));
+  }
+
+  function seg(root, attr, on) {
+    $$('button', root).forEach((b) => b.addEventListener('click', () => {
+      $$('button', root).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      on(b.dataset[attr]);
+    }));
+  }
+
+  /* ---------- 1 tokens ---------- */
+  const tk = $('#tk-stage');
+  const tkIn = { lime: $('#tk-lime'), peri: $('#tk-peri'), navy: $('#tk-navy') };
+  const tkDef = { lime: '#cadf42', peri: '#c0c4fe', navy: '#151f30' };
+  function tkPaint() {
+    const lines = [];
+    Object.keys(tkIn).forEach((k) => {
+      const v = tkIn[k].value;
+      if (v.toLowerCase() === tkDef[k]) tk.style.removeProperty('--' + k);
+      else { tk.style.setProperty('--' + k, v); lines.push(`  --${k}: ${v};`); }
+    });
+    $('#tk-read').innerHTML = lines.length
+      ? `<b>#demo-box</b> {\n${lines.join('\n')}\n}\n\nOne declaration, and every var(--…) inside the box follows.`
+      : `Every tile and button reads its color from :root.\nNothing is overridden yet.`;
+  }
+  Object.values(tkIn).forEach((i) => i.addEventListener('input', tkPaint));
+  $('#tk-reset').addEventListener('click', () => { Object.keys(tkIn).forEach((k) => { tkIn[k].value = tkDef[k]; }); tkPaint(); });
+  tkPaint();
+
+  /* ---------- 2 themes ---------- */
+  const th = $('#th-stage');
+  function thPaint() {
+    const t = th.dataset.gtheme;
+    const pad = (s, n) => s + ' '.repeat(Math.max(1, n - s.length));
+    const row = (gen, suf) => `${pad(gen, 10)}→  ${pad(`var(--theme-${t}${suf})`, 26)}→  ${css(th, gen)}`;
+    $('#th-read').innerHTML = `&lt;div data-gtheme="<b>${t}</b>"&gt;\n\n` + [row('--kd-g', ''), row('--kd-g-on', '-on'), row('--kd-g2', '-2')].join('\n');
+  }
+  seg($('#th-seg'), 't', (t) => { th.dataset.gtheme = t; thPaint(); });
+  thPaint();
+
+  /* ---------- 3 BEM ---------- */
+  const bemStage = $('#bem-stage');
+  $$('#bem-chips .chip').forEach((c) => c.addEventListener('click', () => {
+    const on = c.getAttribute('aria-pressed') !== 'true';
+    $$('#bem-chips .chip').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+    $$('.is-lit', bemStage).forEach((e) => e.classList.remove('is-lit'));
+    if (!on) { $('#bem-read').textContent = 'Tap a class above.'; return; }
+    c.setAttribute('aria-pressed', 'true');
+    const hits = $$(c.dataset.sel, bemStage);
+    hits.forEach((e) => e.classList.add('is-lit'));
+    const name = c.textContent.trim();
+    const type = c.classList.contains('chip--b') ? 'block' : c.classList.contains('chip--m') ? 'modifier' : c.classList.contains('chip--e') ? 'element' : 'structural selector';
+    $('#bem-read').innerHTML = `<b>${esc(c.dataset.sel)}</b>  (${type})\nmatches ${hits.length} element${hits.length === 1 ? '' : 's'}` +
+      (type === 'structural selector' ? `\nOnly the 2nd card: :nth-child(even) picks by position in the grid,\nso the data never has to say which color a card gets.` : '');
+  }));
+
+  /* ---------- 4 sections ---------- */
+  const sx = $('#sx-box');
+  function sxPaint() {
+    const m = $('#sx-margin').checked;
+    sx.classList.toggle('has-margin', m);
+    sx.classList.toggle('layers', $('#sx-layers').checked);
+    $('#sx-read').innerHTML = `.kd-sec { scroll-margin-top: <b>${m ? '66px' : '0'}</b>; }   /* real value: 120px */\nsticky bar height: 54px`;
+  }
+  $('#sx-margin').addEventListener('change', sxPaint);
+  $('#sx-layers').addEventListener('change', sxPaint);
+  $$('[data-jump]').forEach((b) => b.addEventListener('click', () => {
+    const t = document.getElementById(b.dataset.jump);
+    const margin = parseFloat(getComputedStyle(t).scrollMarginTop) || 0;
+    const smooth = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    sx.scrollTo({ top: t.offsetTop - margin, behavior: smooth ? 'smooth' : 'auto' });
+  }));
+  sxPaint();
+
+  /* ---------- 5 minmax ---------- */
+  const mmGrid = $('#mm-grid'), mmFrame = $('#mm-frame');
+  function mmPaint() {
+    const cols = getComputedStyle(mmGrid).gridTemplateColumns.split(' ').map((v) => Math.round(parseFloat(v)));
+    const over = mmGrid.scrollWidth - mmFrame.clientWidth;
+    const plain = mmGrid.classList.contains('is-plain');
+    $('#mm-read').innerHTML = `grid-template-columns: <b>${plain ? 'repeat(2, 1fr)' : 'repeat(2, minmax(0, 1fr))'}</b>\ncontainer ${mmFrame.clientWidth}px · columns ${cols.join('px + ')}px\n` +
+      (over > 1 ? `overflows by ${Math.round(over)}px: the long name's min-content width won` : `fits: both columns get an equal share, the name truncates`);
+  }
+  seg($('#mm-seg'), 'm', (m) => { mmGrid.classList.toggle('is-plain', m === 'plain'); mmPaint(); });
+  addEventListener('resize', mmPaint);
+  requestAnimationFrame(mmPaint);
+
+  /* ---------- 6 container ---------- */
+  const NAMES = ['Mango', 'Bantay', 'Luna', 'Choco', 'Tisoy', 'Kidlat', 'Ganda', 'Biscuit'];
+  $('#cq-grid').innerHTML = NAMES.map((n) => `<div class="k-card"><i></i><span>${n}</span></div>`).join('');
+  const cqR = $('#cq-w');
+  function cqPaint() {
+    const w = +cqR.value;
+    $('#cq-box').style.width = w + 'px';
+    $('#cq-wv').textContent = w + 'px';
+    $('#cq-now').style.left = (w / 1100 * 100) + '%';
+    let cols = 2;
+    $$('#cq-rules li').forEach((li) => { const on = w >= +li.dataset.min; li.classList.toggle('on', on); });
+    if (w >= 720) cols = 3; if (w >= 1040) cols = 4;
+    $('#cq-read').innerHTML = `container: <b>${w}px</b> → ${cols} columns\nbrowser window: ${innerWidth}px (unchanged)`;
+  }
+  cqR.addEventListener('input', cqPaint);
+  addEventListener('resize', cqPaint);
+  cqPaint();
+
+  /* ---------- 7 rail ---------- */
+  const RESCUES = [
+    ['Bantay', 'Found under a jeepney, Cubao', '#c98d5a,#5b3a22'],
+    ['Luna', 'Pulled from a flooded lot, Marikina', '#a7aab6,#3d4252'],
+    ['Choco', 'Left outside a vet, Pasig', '#7a5236,#2f1e14'],
+    ['Ganda', 'Rescued from a rooftop, Sampaloc', '#e0b98a,#9a6a3e'],
+  ];
+  const rlW = $('#rl-w'), rlN = $('#rl-n'), rail = $('#rl-rail');
+  function rlPaint() {
+    const w = +rlW.value, n = +rlN.value;
+    $('#rl-box').style.width = w + 'px';
+    $('#rl-wv').textContent = w + 'px';
+    $('#rl-nv').textContent = n;
+    rail.innerHTML = RESCUES.slice(0, n).map(([nm, meta, g]) => `<div class="r-card" style="background:linear-gradient(160deg,${g})"><div class="r-card__over"><p class="r-card__name">${nm}</p><p class="r-card__meta">${meta}</p></div></div>`).join('');
+    const max = n >= 3 ? '1fr' : '360px';
+    rail.style.setProperty('--n', Math.min(4, n));
+    rail.style.setProperty('--max', max);
+    $('#rl-stage').classList.toggle('no-snap', !$('#rl-snap').checked);
+    $('#rl-stage').classList.toggle('show-bleed', $('#rl-bleed').checked);
+    const mode = w >= 720
+      ? `≥ 720px: grid · grid-template-columns: repeat(${Math.min(4, n)}, minmax(0, ${max}))`
+      : `< 720px: swipe rail · each card 72% wide · snap ${$('#rl-snap').checked ? 'on' : 'off'}`;
+    $('#rl-read').innerHTML = `style={{ '--n': <b>${Math.min(4, n)}</b>, '--max': <b>'${max}'</b> }}\n${mode}` +
+      ($('#rl-bleed').checked ? `\nshaded strips = .kd-wrap's 16px gutter · dashed = rail pulled out over it` : '');
+  }
+  [rlW, rlN].forEach((i) => i.addEventListener('input', rlPaint));
+  ['#rl-snap', '#rl-bleed'].forEach((s) => $(s).addEventListener('change', rlPaint));
+  rlPaint();
+
+  /* ---------- 8 buttons ---------- */
+  const bt = $('#bt-stage'), btMix = $('#bt-mix');
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  $('#bt-touch').checked = !canHover;
+  function btPaint() {
+    const m = btMix.value + '%';
+    bt.style.setProperty('--mix', m);
+    $('#bt-mixv').textContent = m;
+    bt.classList.toggle('can-hover', !$('#bt-touch').checked);
+    $('#bt-swl').textContent = `hover (${m})`;
+    const touch = $('#bt-touch').checked;
+    $('#bt-read').innerHTML = `.kd-btn--lime:hover { background: color-mix(in oklab, var(--lime) <b>${m}</b>, var(--navy)); }\n` +
+      (touch ? `touch screen: the hover rules don't apply. :active (press) still does.` : `mouse: hover rules apply inside @media (hover: hover) and (pointer: fine)`) +
+      (canHover ? '' : `\n(your device reports no hover, so this starts in touch mode)`);
+  }
+  btMix.addEventListener('input', btPaint);
+  $('#bt-touch').addEventListener('change', btPaint);
+  btPaint();
+
+  /* ---------- 9 reveal ---------- */
+  const rv = $('#rv-grid');
+  rv.innerHTML = NAMES.map((n, i) => `<div class="rv-item"><i></i><code>--i: ${Math.min(i, 7)}</code></div>`).join('');
+  function replay(el) {
+    el.removeAttribute('data-shown');
+    void el.offsetWidth;
+    requestAnimationFrame(() => el.setAttribute('data-shown', ''));
+  }
+  const reducedOS = matchMedia('(prefers-reduced-motion: reduce)');
+  function rvPaint() {
+    const s = $('#rv-step').value + 'ms';
+    $('#rv-stage').style.setProperty('--step', s);
+    $('#rv-stepv').textContent = s;
+    $('#rv-stage').classList.toggle('sim-reduced', $('#rv-rm').checked);
+    const last = 7 * parseInt(s, 10);
+    $('#rv-read').innerHTML = `animation-delay: calc(var(--i) * <b>${s}</b>)\nlast card starts at ${last}ms, finishes at ${last + 760}ms` +
+      ($('#rv-rm').checked ? `\nreduced motion: animations off, cards simply present` : '') +
+      (reducedOS.matches ? `\nyour device asks for reduced motion, so the real rules stay still here too` : '');
+  }
+  $('#rv-play').addEventListener('click', () => replay(rv));
+  $('#rv-step').addEventListener('input', rvPaint);
+  $('#rv-rm').addEventListener('change', rvPaint);
+  rvPaint();
+
+  /* ---------- 10 pile ---------- */
+  const TAGS = ['Rescues', 'Adopt', 'Before adopting', 'Updates', 'Events', 'Team', 'Volunteer', 'Donate', 'Care guides'];
+  const tags = $('#pl-tags');
+  let tagCount = 7;
+  function plRender() {
+    tags.innerHTML = TAGS.slice(0, tagCount).map((t) => `<span>${t}</span>`).join('');
+    plRead();
+  }
+  function plRead() {
+    const rows = $$('span', tags).map((el, i) => {
+      const k = (i % 5) + 1;
+      const rule = k === 5 ? '5n  ' : `5n+${k}`;
+      return `${String(i + 1).padStart(2)}  :nth-child(${rule})  --r: ${css(el, '--r').padStart(5)}`;
+    });
+    $('#pl-read').textContent = rows.join('\n');
+  }
+  $('#pl-play').addEventListener('click', () => replay(tags));
+  $('#pl-add').addEventListener('click', () => { if (tagCount < TAGS.length) { tagCount++; tags.insertAdjacentHTML('beforeend', `<span>${TAGS[tagCount - 1]}</span>`); plRead(); } });
+  $('#pl-rem').addEventListener('click', () => { if (tagCount > 1) { tagCount--; tags.lastElementChild.remove(); plRead(); } });
+  $('#pl-bounce').addEventListener('change', (e) => {
+    $('#pl-stage').style.setProperty('--drop-ease', e.target.checked ? 'cubic-bezier(0.34, 1.56, 0.64, 1)' : 'cubic-bezier(0.23, 1, 0.32, 1)');
+    replay(tags);
+  });
+  plRender();
+
+  /* ---------- 11 marquee ---------- */
+  const lineA = ['Mango', 'Bantay', 'Luna', 'Choco', 'Tisoy', 'Kidlat'].map((n) => `<span>${n}</span>${PAW}`).join('');
+  const lineB = ['Looking for homes in Quezon City', 'Adopt, don’t shop', 'Every rescue has a story'].map((n) => `<span>${n}</span>${PAW}`).join('');
+  $('#mq-a').innerHTML = `<div>${lineA}</div><div aria-hidden="true">${lineA}</div>`;
+  $('#mq-b').innerHTML = `<div>${lineB}</div><div aria-hidden="true">${lineB}</div>`;
+  const mq = $('#mq-stage');
+  function mqPaint() {
+    const d = $('#mq-dur').value, t = $('#mq-tilt').value;
+    mq.style.setProperty('--dur', d + 's');
+    mq.style.setProperty('--tilt', t);
+    mq.classList.toggle('seams', $('#mq-seams').checked);
+    $('#mq-durv').textContent = d + 's';
+    $('#mq-tiltv').textContent = (+t).toFixed(1) + '°';
+    const tw = $('#mq-a').scrollWidth;
+    $('#mq-read').innerHTML = `track width: ${tw}px (two copies) → translateX(-50%) moves <b>${Math.round(tw / 2)}px</b>, exactly one copy\nband A: ${d}s · band B: ${(d * 1.2).toFixed(1)}s reversed (real: 60s and 72s)` +
+      (reducedOS.matches ? `\nyour device asks for reduced motion, so the bands stay still` : '');
+  }
+  ['#mq-dur', '#mq-tilt'].forEach((s) => $(s).addEventListener('input', mqPaint));
+  $('#mq-seams').addEventListener('change', mqPaint);
+  addEventListener('resize', mqPaint);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(mqPaint);
+  mqPaint();
+
+  /* ---------- 12 scroll-driven ---------- */
+  const sd = $('#sd-box');
+  const sdOK = window.CSS && CSS.supports('animation-timeline: scroll()');
+  function sdPaint() {
+    const y = Math.round(sd.scrollTop);
+    const p = Math.min(100, Math.round(y / 140 * 100));
+    $('#sd-stage').classList.toggle('loud', $('#sd-loud').checked);
+    $('#sd-read').innerHTML = sdOK
+      ? `scrolled: ${y}px · animation-range: 0 140px → <b>${p}%</b> through kd-bar-lift`
+      : `Your browser doesn't support scroll-driven animations yet, so @supports skips the rule\nand the bar stays flat. That's the fallback working as designed.\nscrolled: ${y}px`;
+  }
+  sd.addEventListener('scroll', sdPaint, { passive: true });
+  $('#sd-loud').addEventListener('change', sdPaint);
+  sdPaint();
+
+  /* ---------- 13 safety ---------- */
+  function rmPaint() { $('#rm-pill').textContent = reducedOS.matches ? 'reduced motion' : 'full motion (no preference)'; }
+  if (reducedOS.addEventListener) reducedOS.addEventListener('change', () => { rmPaint(); rvPaint(); mqPaint(); });
+  rmPaint();
+  $('#sk-start').addEventListener('click', (e) => e.currentTarget.focus());
+  $('#sk-link').addEventListener('click', (e) => { e.preventDefault(); $('#skip-target').focus(); });
+})();
+</script>
+
+</body>
+</html>
