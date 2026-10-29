@@ -104,6 +104,19 @@ svg.paw { width: 1em; height: 1em; fill: currentColor; flex: none; }
 .terms li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: baseline; }
 .terms b { font-family: var(--mono); font-size: 13px; font-weight: 600; }
 
+/* beginner box: plain-language version that opens each lesson */
+.eli5 { max-width: 66ch; margin: 4px 0 26px; padding: 18px 22px 6px; border-radius: 20px; background: var(--lime-soft); box-shadow: inset 4px 0 0 var(--lime); }
+.eli5__tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.eli5 b { font-weight: 700; }
+.grown { margin-bottom: 10px; }
+.glossary { display: grid; gap: 10px; margin: 0 0 16px; padding: 0; list-style: none; max-width: 66ch; }
+.glossary li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: baseline; }
+.glossary b { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.anatomy { margin: 0 0 16px; max-width: 66ch; }
+.anatomy pre { margin: 0; padding: 16px 18px; border-radius: 16px; background: var(--code-bg); color: var(--code-ink); font-family: var(--mono); font-size: 14px; line-height: 1.7; overflow-x: auto; }
+.anatomy .a1 { color: var(--code-sel); } .anatomy .a2 { color: var(--code-prop); } .anatomy .a3 { color: var(--code-num); }
+.anatomy figcaption { font-size: 16px; color: var(--muted); margin-top: 8px; }
+
 table.bp { border-collapse: collapse; font-size: 16px; min-width: 460px; }
 table.bp th, table.bp td { text-align: left; padding: 8px 14px 8px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.bp th { font-family: var(--mono); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 400; }
@@ -399,7 +412,7 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
 .foot { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding-top: 24px; }
 
 @media (max-width: 520px) {
-  .terms li { grid-template-columns: 1fr; gap: 2px; }
+  .terms li, .glossary li { grid-template-columns: 1fr; gap: 2px; }
   .bem-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .kd-card__name { font-size: 22px; line-height: 28px; }
   .stage { padding: 14px; }
@@ -418,12 +431,14 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <p class="mast__eyebrow">Kindred · src/styles · tokens.css, kindred.css, app.css</p>
   <h1>The Kindred <em>CSS</em> Field Guide</h1>
   <p class="mast__lede">Thirteen lessons on the stylesheet behind your rescue pages. Each one explains a technique, runs it live with the same rules from <code>kindred.css</code>, and points to the exact lines so you can open them next to this page.</p>
+  <p class="mast__lede">New to CSS? Start with <a href="#start">lesson 0</a>, then read the green <b>Like you're 5</b> box at the top of each lesson. The rest of the lesson is the grown-up version, so skip it until you're ready.</p>
   <div class="progress"><div class="progress__bar"><span id="pbar"></span></div><span id="ptext">0 of 13 lessons marked done</span></div>
 </header>
 
 <div class="shell">
   <nav class="toc" aria-label="Lessons" id="toc">
     <p class="toc__part">Foundations</p>
+    <a href="#start" data-id="start"><span class="n">0</span>What is CSS?</a>
     <a href="#tokens" data-id="tokens"><span class="n">1</span>Design tokens</a>
     <a href="#themes" data-id="themes"><span class="n">2</span>Group themes</a>
     <a href="#bem" data-id="bem"><span class="n">3</span>BEM naming</a>
@@ -444,10 +459,51 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   </nav>
 
   <main>
+  <!-- ================= 0 START ================= -->
+  <section class="lesson" id="start">
+    <p class="eyebrow">Lesson 0 · start here</p>
+    <h2>What is CSS?</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p>
+      <p>A web page is made of two things that work together.</p>
+      <p><b>HTML is the LEGO bricks.</b> It says <em>what</em> is on the page: a title, a photo of a puppy, a button that says "Adopt me".</p>
+      <p><b>CSS is the paint and the building instructions.</b> It says how those bricks <em>look</em> and <em>where they go</em>: this button is lime green and round, these cards sit in two columns, that title is big.</p>
+      <p>Without CSS, Kindred would still work, but it would look like a plain black-and-white letter.</p>
+    </div>
+
+    <div class="prose">
+      <p>Every CSS rule is a little sentence: <strong>"Find these things, and make them look like this."</strong></p>
+    </div>
+    <figure class="anatomy">
+<pre><span class="a1">.kd-btn--lime</span> {
+  <span class="a2">background</span>: <span class="a3">var(--lime)</span>;
+  <span class="a2">color</span>: <span class="a3">var(--navy)</span>;
+}</pre>
+      <figcaption>Read it out loud: "Find every <b>lime button</b>. Paint its <b>background</b> with the <b>lime</b> color, and make its <b>writing</b> navy."</figcaption>
+    </figure>
+
+    <p class="eyebrow grown">Words you'll see in every lesson</p>
+    <ul class="glossary">
+      <li><b>selector</b><span><em>Who</em> the rule is about. <code>.kd-btn--lime</code> means "every element wearing the name tag <code>kd-btn--lime</code>".</span></li>
+      <li><b>class</b><span>A name tag stuck on a piece of HTML, like <code>class="kd-card"</code>. In CSS you point at it with a dot: <code>.kd-card</code>.</span></li>
+      <li><b>property</b><span><em>What</em> to change: <code>background</code>, <code>color</code>, <code>width</code>, <code>font-size</code>.</span></li>
+      <li><b>value</b><span><em>How</em> to change it: <code>lime</code>, <code>200px</code>, <code>bold</code>.</span></li>
+      <li><b>variable</b><span>A labelled jar that holds a value, written <code>--lime</code> and used with <code>var(--lime)</code>. Lesson 1 is all about these.</span></li>
+      <li><b>px</b><span>Pixels, the tiny dots your screen is made of. <code>16px</code> is about the height of normal text.</span></li>
+      <li><b>@media / @container</b><span>"Only do this <em>if</em>…", for example only if the screen is wide, or only if the person uses a mouse.</span></li>
+    </ul>
+
+    <div class="prose">
+      <p><strong>How to use this guide:</strong> read the green box, play with the <b>Try it</b> panel (you can't break anything there), and leave the grown-up part for later. It's normal not to get everything the first time. Come back after you've built something and it will make more sense.</p>
+      <p>The real CSS lives in three files in <code>src/styles</code>: <code>tokens.css</code> (the crayon box), <code>kindred.css</code> (how the public pages look) and <code>app.css</code> (a few rules for the whole app).</p>
+    </div>
+  </section>
+
   <!-- ================= 1 TOKENS ================= -->
   <section class="lesson" id="tokens">
     <p class="eyebrow">Lesson 1 · tokens.css</p>
     <h2>Design tokens</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Think of a box of crayons where every crayon has a name on it: <b>lime</b>, <b>navy</b>, <b>peri</b>.</p><p>Instead of writing the secret color code <code>#cadf42</code> every time we want green, the whole website just says "use the <b>lime</b> crayon". If you swap what's inside the lime crayon once, every drawing that used it changes color by itself.</p><p>Dark mode is the same trick. We swap in a "night-time" crayon box that has the same names but darker colors, and the whole page follows.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Every color, spacing step, radius and font in Kindred is defined once, in <code>tokens.css</code>, as a CSS custom property. Components never write <code>#cadf42</code>. They write <code>var(--lime)</code>.</p>
       <p>Two facts make this powerful:</p>
@@ -512,6 +568,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="themes">
     <p class="eyebrow">Lesson 2 · kindred.css 9–11, 30–33</p>
     <h2>Group themes with one attribute</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>It's like team shirts on sports day. Each rescue group picks a team: <b>moss</b>, <b>harbor</b>, <b>cocoa</b> or <b>slate</b>. That team name is stuck on the page like a sticker.</p><p>The buttons and top bar never ask "which team am I on?". They just say "give me my team color", and the sticker decides which color that is. Change the sticker and everything changes shirts at once.</p><p>Each team also has a second color that's easy to read <em>on top of</em> the team color, the same way white writing is easy to read on a dark blue shirt.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Each rescue group picks one of four page colors. <code>PublicSite</code> puts that choice on the page root as <code>data-gtheme="harbor"</code>. Four short rules then translate it into three generic variables.</p>
       <ul>
@@ -571,6 +629,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="bem">
     <p class="eyebrow">Lesson 3 · kindred.css 86–126</p>
     <h2>BEM naming</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>BEM is a way of naming things so you always know where they live, like an address.</p><p><b>kd-card</b> is the house (the <b>Block</b>). <b>kd-card__name</b> is a room inside that house. Two underscores <code>__</code> mean "belongs to". <b>kd-card--adoption</b> is the same house painted a special way. Two dashes <code>--</code> mean "a kind of".</p><p>So when you read a name like <code>kd-card__photo</code> you instantly know it's the photo that lives inside a card. The <code>kd-</code> at the front is our family name, so our things never get mixed up with someone else's.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Every class is <strong>Block__Element--Modifier</strong>, with a <code>kd-</code> prefix so nothing collides with outside styles.</p>
     </div>
@@ -633,6 +693,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="sections">
     <p class="eyebrow">Lesson 4 · kindred.css 272–277 · PublicSite.tsx 151–160</p>
     <h2>Section anatomy</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Every part of the home page is built like a picnic:</p><p>1. A <b>tablecloth</b> that goes all the way across the screen and has a color (the <b>section</b>).<br>2. A <b>plate</b> in the middle, the same size for every section, so the food always lines up (<code>kd-wrap</code>).<br>3. The <b>food</b> arranged on the plate: cards in a grid, or in a row you can swipe.</p><p>One more trick: the top bar stays stuck to the top of the screen like a hat brim. When you tap a link that jumps to a section, we tell the page to stop a little early so the brim doesn't cover the title.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Every home page section is three nested layers:</p>
       <ul>
@@ -692,6 +754,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="minmax">
     <p class="eyebrow">Lesson 5 · kindred.css 129</p>
     <h2>Why minmax(0, 1fr)</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Picture two kids sharing a bench, half each. One kid is wearing a super long scarf that won't fold up (that's a really long pet name).</p><p>With the normal rule, that kid refuses to squish and shoves the bench right off the table. The page breaks and gets wider than the screen.</p><p><code>minmax(0, 1fr)</code> means "you're allowed to squish, all the way down to nothing if you need to". So both kids get exactly half, and the long scarf gets tucked away with three little dots <b>…</b> at the end.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Kindred writes columns as <code>repeat(2, minmax(0, 1fr))</code> instead of <code>repeat(2, 1fr)</code>. It looks redundant. It isn't.</p>
       <p>A <code>1fr</code> track has a hidden minimum: it won't shrink below the <em>min-content</em> width of what's inside it. A card name with <code>white-space: nowrap</code> has a min-content width equal to the entire name. One long name forces its column wider and pushes the grid out of its container. <code>minmax(0, 1fr)</code> sets that minimum to zero, so both columns stay equal and the ellipsis can do its job.</p>
@@ -729,6 +793,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="container">
     <p class="eyebrow">Lesson 6 · app.css 4 · kindred.css 133–137</p>
     <h2>Container queries</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Imagine a goldfish that grows to fit its <b>bowl</b>, not the whole <b>house</b>.</p><p>The old way (a media query) asks "how big is the house?", meaning the whole browser window. The new way (a container query) asks "how big is my bowl?", meaning the box the page is sitting in.</p><p>This matters in the dashboard. The preview of the public page is a small bowl inside a big house. If it only looked at the house, it would think it had lots of room and pick the wrong layout. Looking at its own bowl, it fits.</p><p>We also dress for the smallest bowl first (a phone), then add more columns as the bowl gets bigger. That's called <b>mobile first</b>.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>A media query asks how wide the browser window is. A container query asks how wide a <em>specific element</em> is. Kindred turns <code>#root</code> into a container with one line, so every <code>@container</code> rule responds to the app's own width. The animal overlay declares its own container too.</p>
       <p>This is what makes the dashboard preview work. The same public page renders inside a narrower panel and lays itself out for the space it actually has. A media query would see a wide window and wrongly pick the desktop layout.</p>
@@ -791,6 +857,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="rail">
     <p class="eyebrow">Lesson 7 · kindred.css 130–135 · PublicSite.tsx 155</p>
     <h2>Rail to grid</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>On a phone, the rescue cards sit in a <b>train</b>: one long row you swipe along. The next card peeks in from the side, like the next carriage, so you know there's more.</p><p>When you swipe, the cards click into place like magnets instead of stopping halfway. That's <b>scroll snap</b>.</p><p>On a big screen the train parks and the carriages line up neatly in rows. That's the <b>grid</b>. They're the same cards; only the instructions for arranging them change.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>On phones the Rescue Gallery is a swipe carousel. From 720px it's a grid. Same element, same cards; only the CSS changes.</p>
       <ul>
@@ -846,6 +914,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="buttons">
     <p class="eyebrow">Lesson 8 · kindred.css 39–67</p>
     <h2>Hover, press and color-mix</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p><b>Hover</b> is when your mouse floats over a button. Instead of choosing a brand-new color for that, we <b>mix paint</b>: mostly lime, plus a tiny splash of navy. If the lime ever changes, the hover color changes with it.</p><p>Fingers can't float, only mice can. So hover colors are only switched on for computers with a mouse. On phones they'd get stuck on after you tap.</p><p><b>Press</b> is when you push the button. It squishes down a little, like a real button, and that works for fingers and mice.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p><strong>Hover colors are mixed, not picked.</strong> <code>color-mix(in oklab, var(--lime) 86%, var(--navy))</code> is 86% lime with 14% navy. It's computed from tokens, so hover states follow when a token changes, and there are no extra hex values to maintain. Mixing in <code>oklab</code> keeps the result from going muddy.</p>
       <p><strong>Hover only exists for mice.</strong> Every hover rule sits inside <code>@media (hover: hover) and (pointer: fine)</code>. On a phone, a tap leaves <code>:hover</code> stuck on until you tap somewhere else. The query keeps hover styles to devices that really hover.</p>
@@ -905,6 +975,8 @@ table.bp td:first-child { font-family: var(--mono); font-size: 14px; white-space
   <section class="lesson" id="reveal">
     <p class="eyebrow">Lesson 9 · motion.tsx 9–24 · kindred.css 706–729</p>
     <h2>Scroll reveal and stagger</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>It's like a class photo where the teacher says "when you can see me, stand up one at a time".</p><p><b>JavaScript is the lookout.</b> It watches the screen and shouts "they can see you now!" when a group of cards scrolls into view. That's its only job.</p><p><b>CSS is how they stand up.</b> Card 1 goes, then card 2 a tiny moment later, then card 3, like counting 1, 2, 3. Waiting your turn like this is called a <b>stagger</b>.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p><strong>JavaScript decides when; CSS decides how.</strong> <code>useReveal()</code> watches every <code>[data-reveal]</code> element with an IntersectionObserver and adds <code>data-shown</code> once it's 10% in view. That is all the JavaScript does.</p>
       <p>The CSS hides the children until <code>data-shown</code> appears, then animates them in. The stagger comes from <code>--i</code>: <code>:nth-child(2)</code> sets <code>--i: 1</code>, <code>:nth-child(3)</code> sets <code>--i: 2</code>, and so on. Each child's delay is <code>calc(var(--i) * 80ms)</code>.</p>
@@ -964,6 +1036,8 @@ export function useReveal() {
   <section class="lesson" id="pile">
     <p class="eyebrow">Lesson 10 · kindred.css 579–591, 727, 731</p>
     <h2>The tag pile</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>The tags at the bottom of the page look like someone tossed stickers on a table. It's actually a pattern, like the chorus of a song.</p><p>Tilt left, tilt right, little left, big right, tiny left. Then the pattern starts again for the next five tags. The computer counts the tags in fives to know which tilt each one gets.</p><p>When they fall in, they <b>bounce</b>: they go a little past their spot and settle back, like landing on a trampoline. Hover over one with a mouse and it straightens up.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>The footer's section tags look hand-tossed, but there's no randomness. <code>:nth-child(5n+1)</code> through <code>:nth-child(5n)</code> give five tags five angles through <code>--r</code>, then the pattern repeats. <code>margin-right: -6px</code> lets neighbors overlap a little, which sells the pile.</p>
       <p>Keeping the angle in a variable pays off twice. The resting transform is <code>rotate(var(--r))</code>, and the drop-in keyframe starts from <code>rotate(calc(var(--r) - 16deg))</code>. One keyframe serves every tag, and each swings into its own angle.</p>
@@ -1013,6 +1087,8 @@ export function useReveal() {
   <section class="lesson" id="marquee">
     <p class="eyebrow">Lesson 11 · kindred.css 224–236</p>
     <h2>Marquee bands</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>The scrolling words work like a <b>treadmill</b>.</p><p>We write the words <b>twice</b> on one long strip, one copy right after the other. The strip slides left by exactly one copy, then jumps back to the start. Because copy 2 looks exactly like copy 1, your eyes can't see the jump, so it looks like it goes on forever.</p><p>The two bands move in opposite directions at slightly different speeds so they never line up. Put your mouse on them and they pause.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>The endless scroll is a trick with two copies. The track holds the list twice, side by side, and is <code>width: max-content</code> so it's as long as both. The animation moves it by <code>translateX(-50%)</code>: exactly one copy's width. At that moment copy 2 sits exactly where copy 1 started, so the loop restarts with no visible jump.</p>
       <p>Band B runs in <code>reverse</code> at 72s against band A's 60s, so the two never fall into step. Hovering pauses both with <code>animation-play-state</code>. Each band is 112% wide with <code>margin-left: -6%</code> so the tilted ends never show a gap at the sides.</p>
@@ -1057,6 +1133,8 @@ export function useReveal() {
   <section class="lesson" id="scrolltimeline">
     <p class="eyebrow">Lesson 12 · kindred.css 733–737</p>
     <h2>Scroll-driven animation</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Most animations follow a <b>clock</b>: they play for half a second and they're done.</p><p>This one follows your <b>scrolling</b> instead, like a dimmer switch for a light. Scroll down a little and the top bar's shadow gets a little stronger. Scroll back up and it fades away.</p><p>Some older browsers don't know this trick. They just show a plain bar with no shadow, and that's fine. Nothing breaks.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>The public top bar gains a shadow as you scroll, with no JavaScript. <code>animation-timeline: scroll(root block)</code> ties the animation's progress to the page's scroll position instead of to time. <code>animation-range: 0 140px</code> maps 0px scrolled to the start and 140px to the end, so the shadow fades in over the first 140px.</p>
       <p>It's wrapped in <code>@supports (animation-timeline: scroll())</code>. Browsers without support skip the block and keep a flat bar, which is fine. That's the pattern for any enhancement where the fallback is acceptable.</p>
@@ -1102,6 +1180,8 @@ export function useReveal() {
   <section class="lesson" id="safety">
     <p class="eyebrow">Lesson 13 · kindred.css 739–746 · app.css 6, 13–14</p>
     <h2>Safety nets</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>These are rules that make the page kind to <b>everyone</b>.</p><p><b>Less wiggling.</b> Some people feel dizzy or sick when things move on screen. Their device can say "less motion please", and we calm everything down.</p><p><b>A flashlight for keyboards.</b> Some people move around a page with the Tab key instead of a mouse. A bright outline shows where they are, like a flashlight.</p><p><b>A secret door.</b> The skip link stays hidden until a keyboard user presses Tab. It lets them jump past the menu straight to the main content.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose">
       <p>Three rules protect people who need them. They're easy to forget and expensive to add later.</p>
       <ul>
@@ -1148,6 +1228,8 @@ export function useReveal() {
   <section class="lesson" id="practice">
     <p class="eyebrow">Next · in your own codebase</p>
     <h2>Practice on the real code</h2>
+    <div class="eli5"><p class="eli5__tag"><svg class="paw"><use href="#paw"/></svg>Like you're 5</p><p>Reading about riding a bike doesn't teach you to ride. You have to get on.</p><p>Each task below asks you to change one small thing in the real website and see what happens. Breaking things on purpose is part of learning. Git remembers the old version, so you can always undo.</p></div>
+    <p class="eyebrow grown">The grown-up version</p>
     <div class="prose"><p>Reading builds recognition; changing the code builds mastery. Each task touches one lesson. Run <code>npm run dev</code>, make the change, and check it at phone and desktop widths.</p></div>
     <ol class="tasks">
       <li><div><h3>Add a "clay" group theme</h3><p>Lesson 2. Add three tokens in <code>tokens.css</code> and one <code>[data-gtheme="clay"]</code> line in <code>kindred.css</code> next to lines 30–33. Set a group to it and preview.</p></div></li>
